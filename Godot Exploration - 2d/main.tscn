@@ -1,11 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://bk5y5osc7libt"]
 
 [ext_resource type="PackedScene" uid="uid://cinvnsnbdela7" path="res://actors/player.tscn" id="1_cfvfw"]
-[ext_resource type="Script" path="res://main.gd" id="1_tkbst"]
-[ext_resource type="Script" path="res://Camera2D.gd" id="4_d2gre"]
-[ext_resource type="Script" path="res://FPSctr.gd" id="5_ivfvg"]
-[ext_resource type="Script" path="res://TextEdit.gd" id="6_a052t"]
-[ext_resource type="Script" path="res://OutputHandler.gd" id="6_i0u21"]
+[ext_resource type="Script" uid="uid://nfyqyq51ikhm" path="res://main.gd" id="1_tkbst"]
+[ext_resource type="Script" uid="uid://dmv5ty0jp0usw" path="res://Camera2D.gd" id="4_d2gre"]
+[ext_resource type="Script" uid="uid://dne3na8bihmog" path="res://FPSctr.gd" id="5_ivfvg"]
+[ext_resource type="Script" uid="uid://p1061diddlim" path="res://TextEdit.gd" id="6_a052t"]
+[ext_resource type="Script" uid="uid://qgcjii7lqy0a" path="res://OutputHandler.gd" id="6_i0u21"]
 [ext_resource type="PackedScene" uid="uid://b1h250kw14fra" path="res://UI/gui.tscn" id="10_5qbhp"]
 
 [node name="Main" type="Node2D"]

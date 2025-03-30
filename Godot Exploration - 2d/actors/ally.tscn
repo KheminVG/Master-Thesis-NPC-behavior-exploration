@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cg2ph64p46koj"]
 
 [ext_resource type="Texture2D" uid="uid://cdeimht6hkm2p" path="res://assets/kenney_top-down-shooter/Spritesheet/spritesheet_characters.png" id="1_7ou2o"]
-[ext_resource type="Script" path="res://actors/Actor.gd" id="1_boprk"]
+[ext_resource type="Script" uid="uid://caur7ug6tbesu" path="res://actors/Actor.gd" id="1_boprk"]
 [ext_resource type="PackedScene" uid="uid://o6molutvo6rq" path="res://actors/health.tscn" id="2_u2bd6"]
 [ext_resource type="PackedScene" uid="uid://l15usiweohi7" path="res://team.tscn" id="5_8ik1j"]
 [ext_resource type="PackedScene" uid="uid://c7f5l8ffw3kpb" path="res://actors/ai.tscn" id="6_ct3kh"]

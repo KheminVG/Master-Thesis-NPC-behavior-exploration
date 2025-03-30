@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c7f5l8ffw3kpb"]
 
-[ext_resource type="Script" path="res://actors/AI.gd" id="1_ny0yf"]
-[ext_resource type="Script" path="res://actors/DetectionZone.gd" id="2_3dn40"]
+[ext_resource type="Script" uid="uid://bpfwbw74mktoe" path="res://actors/AI.gd" id="1_ny0yf"]
+[ext_resource type="Script" uid="uid://d3bjtvyctgdfg" path="res://actors/DetectionZone.gd" id="2_3dn40"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hpcw5"]
 radius = 300.0

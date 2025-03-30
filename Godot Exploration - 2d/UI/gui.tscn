@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://b1h250kw14fra"]
 
 [ext_resource type="FontFile" uid="uid://bypjpyf7yrg8m" path="res://assets/fonts/ETNA.OTF" id="1_3yxl3"]
-[ext_resource type="Script" path="res://UI/gui.gd" id="1_tfl6e"]
+[ext_resource type="Script" uid="uid://du7p3lnewxyvh" path="res://UI/gui.gd" id="1_tfl6e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fxax"]
 bg_color = Color(1, 0.101961, 0.113725, 1)

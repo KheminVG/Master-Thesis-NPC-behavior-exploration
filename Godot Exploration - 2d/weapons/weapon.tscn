@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://ct8d3q8aytfrm"]
 
-[ext_resource type="Script" path="res://weapons/Weapon.gd" id="1_n52ta"]
+[ext_resource type="Script" uid="uid://uamwpvmv4v38" path="res://weapons/Weapon.gd" id="1_n52ta"]
 [ext_resource type="PackedScene" uid="uid://cnbgy53ooppmf" path="res://weapons/bullet.tscn" id="2_y1l1o"]
 [ext_resource type="Texture2D" uid="uid://dggmsn16w6x11" path="res://assets/kenney_top-down-shooter/PNG/weapon_silencer.png" id="3_12v2v"]
 [ext_resource type="Texture2D" uid="uid://bmvw1ga311oab" path="res://assets/kenney_top-down-tanks-redux/Spritesheet/onlyObjects_default.png" id="4_5087d"]
@@ -52,8 +52,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_e1yy4"]
 _data = {
-"muzzleflash": SubResource("Animation_m8fwh"),
-"reload": SubResource("Animation_uyerw")
+&"muzzleflash": SubResource("Animation_m8fwh"),
+&"reload": SubResource("Animation_uyerw")
 }
 
 [node name="Weapon" type="Node2D"]

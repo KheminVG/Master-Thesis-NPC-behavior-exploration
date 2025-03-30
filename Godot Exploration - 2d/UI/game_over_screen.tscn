@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://24ggdow6ll0m"]
 
 [ext_resource type="FontFile" uid="uid://bypjpyf7yrg8m" path="res://assets/fonts/ETNA.OTF" id="1_4haev"]
-[ext_resource type="Script" path="res://UI/game_over_screen.gd" id="1_gfr27"]
+[ext_resource type="Script" uid="uid://7wpcmjvwypsn" path="res://UI/game_over_screen.gd" id="1_gfr27"]
 
 [sub_resource type="Animation" id="Animation_iktt4"]
 resource_name = "fade"
@@ -33,7 +33,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_sqkxw"]
 _data = {
-"fade": SubResource("Animation_iktt4")
+&"fade": SubResource("Animation_iktt4")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ybrfg"]
