@@ -1,7 +1,7 @@
 extends Node2D
 
 const GameOverscreen = preload("res://UI/game_over_screen.tscn")
-var Game_Instance_Scene = preload("res://game_instance.tscn")
+var Game_Instance_Scene = preload("res://instance_small_map.tscn")
 
 @export var instance_num = 1;
 @export var visible_games = true;
@@ -14,7 +14,6 @@ var Game_Instance_Scene = preload("res://game_instance.tscn")
 @onready var gui = $GUI
 @onready var outputhandler = $outputhandler
 @onready var openfile = $OpenFile
-@onready var instanceUI = $FPS/instanceUI
 
 func parse_CLA():
 	var arguments = {}
@@ -94,8 +93,6 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("save"):
 		for game_instance:GameInstance in GAMES.get_children():
 			game_instance.game_state.state_update(true)
-	if Input.is_action_pressed("set_instances"):
-		instanceUI.visible = true
 
 func setup_instance(i:int):
 	var grid_dim:int = ceil(sqrt(instance_num))
@@ -106,38 +103,14 @@ func setup_instance(i:int):
 	GAMES.add_child(new_game_instance)
 	GAMES.move_child(new_game_instance, i)
 	new_game_instance.visible = visible_games
-	# set Game_Instance position on grid;
-	var bounds = new_game_instance.get_node("Bounds")
-	var area = bounds.get_node("area")
-	var size = area.get_shape().get_rect().size
-	var x = (i%grid_dim)*(size.x + 350)
-	var y = (floor(i/grid_dim))*(size.y + 350)
-	new_game_instance.position = Vector2(x, y)
-	# get all (previously onready) vars needed for instance setup
-	var bullet_mgr = new_game_instance.get_node("BulletManager")
-	var ally_map_pts = new_game_instance.get_node("AllyMapPoints")
-	var ally_ai:Director = new_game_instance.get_node("AllyMapDirector")
-	var enemy_ai:Director = new_game_instance.get_node("EnemyMapDirector")
-	var pathfinding = new_game_instance.get_node("Pathfinding")
-	# PARAMETER SETUP 
-	ally_ai.communication_count = communication_count
-	ally_ai.communication_delay = communication_delay
-	enemy_ai.communication_count = communication_count # TODO same as allies?
-	enemy_ai.communication_delay = communication_delay # TODO same as allies?
-	ally_ai.vision_distance = vision_distance
-	ally_ai.vision_angle = vision_angle
-	enemy_ai.vision_distance = vision_distance
-	enemy_ai.vision_angle = vision_angle
 	
-	# connect Global Signal bullet fired
-	GlobalSignals.bullet_fired.connect(bullet_mgr.handle_bullet_spawned)
-	# initialize ally and enemy ai for instance
-	var ally_next_positions:Array = ally_map_pts.get_positions()
-	var ally_next_positions_rev:Array = ally_map_pts.get_positions()
-	ally_next_positions_rev.reverse() # add reverse to loop back through map
-	var ally_init_positions = ally_next_positions + ally_next_positions_rev 
-	ally_ai.initialize(ally_init_positions, pathfinding)
-	enemy_ai.initialize([], pathfinding)
+	# Position the new game_instance
+	new_game_instance.position = new_game_instance.calculate_instance_position(grid_dim, i)
+	
+	# Setup the new game_instance by calling it's setup function
+	new_game_instance.setup()
+	new_game_instance.assign_parameters(null)
+	
 	# connect state flush to output handler
 	new_game_instance.game_state.connect("state_flush",flush_game_instance_state)
 	new_game_instance.set_flush_state(flush_state)
@@ -193,14 +166,3 @@ func remove_game_instance(i):
 
 func _on_open_file_canceled():
 	GAMES.process_mode = Node.PROCESS_MODE_INHERIT
-
-
-func _on_instance_ui_reset_with_instances(count):
-	if count > instance_num:
-		print("WARNING! unexpected behaviour if upscaling...")
-	outputhandler.init(count)
-	for i in range(instance_num):
-		remove_game_instance(i)
-	instance_num = count
-	for i in range(instance_num):
-		setup_instance(i)

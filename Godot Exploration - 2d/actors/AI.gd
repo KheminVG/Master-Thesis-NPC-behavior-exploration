@@ -99,10 +99,13 @@ func _physics_process(delta: float) -> void:
 				set_state(previous_state)
 				return
 			var first_key = target_buffer.keys()[0]
-			self.target = target_buffer[first_key]
-			if target == null:
+			var target_check = target_buffer[first_key]
+			
+			if target_check == null:
 				target_buffer.erase(first_key)  # only pop once target no longer exists
 				return
+			
+			self.target = target_check
 			if target != null and weapon != null:
 				# use global coordinates, not local to node
 				var result = has_line_of_fire(target)

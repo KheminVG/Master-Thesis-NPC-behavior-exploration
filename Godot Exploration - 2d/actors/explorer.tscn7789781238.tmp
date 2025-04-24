@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://cm0jtqp6d27a4"]
+
+[ext_resource type="Script" uid="uid://bttwi68jv0r6v" path="res://behavior/random_walk.gd" id="1_thkmg"]
+[ext_resource type="Texture2D" uid="uid://cdeimht6hkm2p" path="res://assets/kenney_top-down-shooter/Spritesheet/spritesheet_characters.png" id="2_oh0jv"]
+[ext_resource type="Script" uid="uid://d3bjtvyctgdfg" path="res://actors/DetectionZone.gd" id="3_gkjgb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gkjgb"]
+radius = 20.0
+
+[node name="Explorer" type="CharacterBody2D"]
+script = ExtResource("1_thkmg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_oh0jv")
+region_enabled = true
+region_rect = Rect2(390, 0, 33, 43)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.25, 0)
+shape = SubResource("CircleShape2D_gkjgb")
+
+[node name="DetectionZone" type="Area2D" parent="."]
+script = ExtResource("3_gkjgb")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="DetectionZone"]
+polygon = PackedVector2Array(0, 1, 250, -150, 250, 150)
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(64, 0)
+
+[node name="Exploration" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="body_entered" from="DetectionZone" to="." method="_on_detection_zone_body_entered"]
+[connection signal="timeout" from="Exploration" to="." method="_on_exploration_timeout"]

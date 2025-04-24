@@ -1,20 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://bk5y5osc7libt"]
+[gd_scene load_steps=7 format=3 uid="uid://bk5y5osc7libt"]
 
+[ext_resource type="Script" uid="uid://po4wjjg4qnk0" path="res://main.gd" id="1_272bh"]
 [ext_resource type="PackedScene" uid="uid://cinvnsnbdela7" path="res://actors/player.tscn" id="1_cfvfw"]
-[ext_resource type="Script" uid="uid://nfyqyq51ikhm" path="res://main.gd" id="1_tkbst"]
 [ext_resource type="Script" uid="uid://dmv5ty0jp0usw" path="res://Camera2D.gd" id="4_d2gre"]
 [ext_resource type="Script" uid="uid://dne3na8bihmog" path="res://FPSctr.gd" id="5_ivfvg"]
-[ext_resource type="Script" uid="uid://p1061diddlim" path="res://TextEdit.gd" id="6_a052t"]
 [ext_resource type="Script" uid="uid://qgcjii7lqy0a" path="res://OutputHandler.gd" id="6_i0u21"]
 [ext_resource type="PackedScene" uid="uid://b1h250kw14fra" path="res://UI/gui.tscn" id="10_5qbhp"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1_tkbst")
-instance_num = 4
-timescale = 2.0
-communication_count = 2
-communication_delay = 0.2
-vision_angle = 45.0
+script = ExtResource("1_272bh")
 
 [node name="OpenFile" type="FileDialog" parent="."]
 title = "Open File(s)"
@@ -45,18 +39,6 @@ offset_bottom = 23.0
 text = "FPS: 42"
 script = ExtResource("5_ivfvg")
 
-[node name="instanceUI" type="TextEdit" parent="FPS"]
-visible = false
-offset_left = 510.0
-offset_top = 309.0
-offset_right = 675.0
-offset_bottom = 406.0
-tooltip_text = "Enter in-game instance count"
-text = "4"
-context_menu_enabled = false
-wrap_mode = 1
-script = ExtResource("6_a052t")
-
 [node name="TimeOut" type="Timer" parent="."]
 wait_time = 30.0
 
@@ -70,7 +52,5 @@ autostart = true
 [connection signal="canceled" from="OpenFile" to="." method="_on_open_file_canceled"]
 [connection signal="confirmed" from="OpenFile" to="." method="_on_open_file_confirmed"]
 [connection signal="files_selected" from="OpenFile" to="." method="_on_open_file_files_selected"]
-[connection signal="gui_input" from="FPS/instanceUI" to="FPS/instanceUI" method="_on_gui_input"]
-[connection signal="reset_with_instances" from="FPS/instanceUI" to="." method="_on_instance_ui_reset_with_instances"]
 [connection signal="timeout" from="TimeOut" to="." method="_on_time_out_timeout"]
 [connection signal="timeout" from="outputhandler/WriteTimer" to="outputhandler" method="_on_write_timer_timeout"]

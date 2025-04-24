@@ -62,4 +62,3 @@ func write_buffered_data():
 func _on_write_timer_timeout():
 	if write_buffered_game_data:
 		write_buffered_data()
-
