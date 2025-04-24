@@ -74,8 +74,14 @@ func agent_finishes(agent_state) -> void:
 			for other in game_state.state.agents:
 				if agent == other:
 					continue
-				var error: String = agent + " and " + other + " failed the map sanity check"
-				game_state.state["agent_map_comparison"].append(error)
+				
+				if game_state.state.agents[agent]["map"] != game_state.state.agents[other]["map"]:
+					var error: String = agent + " and " + other + " failed the map sanity check"
+					game_state.state["agent_map_comparison"].append(error)
+		
+		for agent in game_state.state.agents:
+			print(agent)
+			print(game_state.state.agents[agent]["map"])
 		stop_instance(true)
 
 

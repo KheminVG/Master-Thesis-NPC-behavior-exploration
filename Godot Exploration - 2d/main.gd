@@ -2,6 +2,7 @@ extends Node2D
 
 const GameOverscreen = preload("res://UI/game_over_screen.tscn")
 var Game_Instance_Scene = preload("res://instance_small_map.tscn")
+#var Game_Instance_Scene = preload("res://small_map_many.tscn")
 
 @export var instance_num = 1;
 @export var visible_games = true;

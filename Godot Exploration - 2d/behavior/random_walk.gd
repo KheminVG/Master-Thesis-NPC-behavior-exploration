@@ -28,20 +28,20 @@ func _physics_process(delta: float) -> void:
 			change_direction(new_direction)
 			set_state(State.WALK)
 		State.UPDATE:
-			update_agent_state()
-			set_state(State.RANDOM)
+			# Check if agent is done exploring
+			if map.explored():
+				exploration.stop()
+				update_agent_state()
+				self.finished.emit(agent_state)
+				set_state(State.FINISH)
+			else:
+				update_agent_state()
+				set_state(State.RANDOM)
 		State.WALK:
 			rotate_to(current_direction)
 			var new_velocity : Vector2 = current_direction * speed
 			velocity = new_velocity
 			move_and_slide()
-	
-	# Check if agent is done exploring
-	if current_state != State.FINISH and map.explored():
-		exploration.stop()
-		update_agent_state()
-		self.finished.emit(agent_state)
-		set_state(State.FINISH)
 
 func setup():
 	build_empty_map()
@@ -66,7 +66,6 @@ func set_state(new_state: int):
 
 func change_direction(direction: Vector2):
 	var current_map_tile = map.global_to_tile(global_position)
-	behavior_trace += "Location: (" + str(current_map_tile.x) + "," + str(current_map_tile.y) + ")\n"
 	current_direction = direction
 
 func avoid_collision():

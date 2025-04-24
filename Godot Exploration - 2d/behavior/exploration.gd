@@ -33,8 +33,16 @@ func _physics_process(delta: float) -> void:
 		State.IDLE:
 			pass
 		State.UPDATE:
-			update_agent_state()
-			set_state(State.WALK)
+			# Check if agent is done exploring
+			if map.explored():
+				exploration.stop()
+				update_agent_state()
+				self.finished.emit(agent_state)
+				set_state(State.FINISH)
+			else:
+				update_agent_state()
+				set_state(State.WALK)
+			
 		State.WALK:
 			if not exploration_path.is_empty():
 				if global_position.distance_to(map.tile_to_global(exploration_path[0])) <= 24.0:
@@ -53,12 +61,6 @@ func _physics_process(delta: float) -> void:
 			else:
 				stop_agent()
 				set_state(State.EXPLORE)
-	
-	# Check if agent is done exploring
-	if current_state != State.FINISH and map.explored():
-		exploration.stop()
-		self.finished.emit(agent_state)
-		set_state(State.FINISH)
 
 func setup():
 	build_empty_map()
@@ -93,7 +95,6 @@ func get_tile_neighbors(pos: Vector2i) -> Array[Vector2i]:
 
 func change_direction(direction: Vector2):
 	var current_map_tile = map.global_to_tile(global_position)
-	behavior_trace += "Location: (" + str(current_map_tile.x) + "," + str(current_map_tile.y) + ")\n"
 	current_direction = direction
 
 func check_vision():
@@ -135,7 +136,7 @@ func check_vision():
 			map.set_tile_value(tile, 0)
 
 func new_exploration_target(current: Vector2i):
-	var frontier: MaxHeap = map.get_frontier_utilities()
+	var frontier: MaxHeap = map.get_frontier_utilities(current)
 	if not frontier.empty():
 		var target: Vector2i = frontier.pop().position
 	
@@ -151,4 +152,3 @@ func new_exploration_target(current: Vector2i):
 
 func _on_exploration_timeout() -> void:
 	set_state(State.UPDATE)
-	print(map.stringify_grid2d())

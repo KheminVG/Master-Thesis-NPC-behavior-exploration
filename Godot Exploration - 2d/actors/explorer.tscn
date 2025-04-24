@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cm0jtqp6d27a4"]
 
-[ext_resource type="Script" uid="uid://bttwi68jv0r6v" path="res://behavior/random_walk.gd" id="1_thkmg"]
+[ext_resource type="Script" uid="uid://di3m1m5x40yiy" path="res://behavior/exploration.gd" id="1_gkjgb"]
 [ext_resource type="Texture2D" uid="uid://cdeimht6hkm2p" path="res://assets/kenney_top-down-shooter/Spritesheet/spritesheet_characters.png" id="2_oh0jv"]
 [ext_resource type="Script" uid="uid://d3bjtvyctgdfg" path="res://actors/DetectionZone.gd" id="3_gkjgb"]
 
@@ -9,7 +9,7 @@ radius = 20.0
 
 [node name="Explorer" type="CharacterBody2D"]
 collision_layer = 2
-script = ExtResource("1_thkmg")
+script = ExtResource("1_gkjgb")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1

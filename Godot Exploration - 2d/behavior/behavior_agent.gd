@@ -13,7 +13,6 @@ enum TeamName { ALLY , ENEMY }
 @onready var vision: Node2D = $vision
 
 var current_direction: Vector2
-var behavior_trace: String = ""
 
 var map: Grid2D
 
@@ -55,7 +54,6 @@ func get_agent_state() -> Dictionary:
 
 func change_direction(direction: Vector2):
 	var current_map_tile = map.global_to_tile(global_position)
-	behavior_trace += "Location: (" + str(current_map_tile.x) + "," + str(current_map_tile.y) + ")\n"
 	current_direction = direction
 
 func avoid_collision():
@@ -85,10 +83,8 @@ func build_empty_map():
 func init_agent_state():
 	agent_state["name"] = self.get_name()
 	agent_state["map"] = self.map.stringify_grid2d()
-	#agent_state["trace"] = self.behavior_trace
 
 func update_agent_state():
 	agent_state["map"] = self.map.stringify_grid2d()
-	#agent_state["trace"] = self.behavior_trace
 	
 	self.state_changed.emit(agent_state)

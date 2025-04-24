@@ -1,0 +1,67 @@
+[gd_scene load_steps=6 format=3 uid="uid://dpw4gqwmpfe5e"]
+
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="1_hbt7j"]
+[ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="2_ki1rf"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_66inv"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_0tpk1"]
+[ext_resource type="Script" uid="uid://cs7l2ibshw7ya" path="res://addons/godot_state_charts/history_state.gd" id="5_2oqiq"]
+
+[node name="SC_testing" type="Node2D"]
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("1_hbt7j")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="ParallelState" type="Node" parent="StateChart"]
+script = ExtResource("2_ki1rf")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="CompoundState" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("3_66inv")
+initial_state = NodePath("ParallelState")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="ParallelState" type="Node" parent="StateChart/ParallelState/CompoundState"]
+script = ExtResource("2_ki1rf")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="AtomicState" type="Node" parent="StateChart/ParallelState/CompoundState/ParallelState"]
+script = ExtResource("4_0tpk1")
+
+[node name="AtomicState2" type="Node" parent="StateChart/ParallelState/CompoundState/ParallelState"]
+script = ExtResource("4_0tpk1")
+
+[node name="AtomicState" type="Node" parent="StateChart/ParallelState/CompoundState"]
+script = ExtResource("4_0tpk1")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="CompoundState2" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("3_66inv")
+initial_state = NodePath("AtomicState")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="AtomicState" type="Node" parent="StateChart/ParallelState/CompoundState2"]
+script = ExtResource("4_0tpk1")
+
+[node name="CompoundState" type="Node" parent="StateChart/ParallelState/CompoundState2"]
+script = ExtResource("3_66inv")
+initial_state = NodePath("AtomicState")
+
+[node name="AtomicState" type="Node" parent="StateChart/ParallelState/CompoundState2/CompoundState"]
+script = ExtResource("4_0tpk1")
+
+[node name="AtomicState2" type="Node" parent="StateChart/ParallelState/CompoundState2/CompoundState"]
+script = ExtResource("4_0tpk1")
+
+[node name="HistoryState" type="Node" parent="StateChart/ParallelState/CompoundState2"]
+script = ExtResource("5_2oqiq")
+default_state = NodePath("../AtomicState")
+
+[node name="ParallelState" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("2_ki1rf")
+
+[node name="AtomicState" type="Node" parent="StateChart/ParallelState/ParallelState"]
+script = ExtResource("4_0tpk1")
+
+[node name="AtomicState2" type="Node" parent="StateChart/ParallelState/ParallelState"]
+script = ExtResource("4_0tpk1")

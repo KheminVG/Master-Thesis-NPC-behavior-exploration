@@ -40,9 +40,8 @@ func set_tile_value(pos: Vector2i, value: int) -> void:
 	var index = pos.x + (pos.y * self._size.x)
 	self._data[index].val = value
 
-func set_tile_utility(pos: Vector2i, value: int) -> void:
-	var index = pos.x + (pos.y * self._size.x)
-	self._data[index].utility = value
+func manhattan_distance(a: Vector2i, b: Vector2i):
+	return abs(a.x - b.x) + abs(a.y - b.y)
 
 func global_to_tile(global_pos: Vector2) -> Vector2i:
 	# TODO check if global_pos is inside the bounds of this grid
@@ -72,7 +71,8 @@ func get_neighbor_values(pos: Vector2i) -> Dictionary[Vector2i, int]:
 	var values: Dictionary[Vector2i, int] = {}
 	for direction in NEIGHBOR_DIRECTIONS:
 		var neighbor: Vector2i = pos + direction
-		values[neighbor] = self.get_tile(neighbor).val
+		if 0 <= neighbor.x and neighbor.x < self._size.x and 0 <= neighbor.y and neighbor.y < self._size.y:
+			values[neighbor] = self.get_tile(neighbor).val
 	
 	return values
 
@@ -85,7 +85,7 @@ func get_frontier_tiles() -> Array[Vector2i]:
 				frontier.append(pos)
 	return frontier
 
-func compute_utility(pos: Vector2i, radius: int = 2) -> float:
+func compute_utility(pos: Vector2i, agent_pos: Vector2i, radius: int = 2) -> float:
 	# TODO update utility calculation
 	# NOW: just counting the amount of unknown tiles in a radius around the given tile position
 	# IDEAS: 
@@ -97,13 +97,19 @@ func compute_utility(pos: Vector2i, radius: int = 2) -> float:
 			var neighbor: Vector2i = pos + Vector2i(dx, dy)
 			if 0 <= neighbor.x and neighbor.x < self._size.x and 0 <= neighbor.y and neighbor.y < self._size.y and self.get_tile(neighbor).val == -1:
 				count += 1
-	return count
+	
+	var utility = count
+	var distance = self.manhattan_distance(agent_pos, pos)
+	if distance > 0:
+		utility /= distance
+	
+	return utility
 
-func get_frontier_utilities() -> MaxHeap:
+func get_frontier_utilities(agent_pos: Vector2i) -> MaxHeap:
 	var frontier_utilities: MaxHeap = MaxHeap.new() 
 	var frontier_tiles: Array[Vector2i] = self.get_frontier_tiles()
 	for tile in frontier_tiles:
-		var utility: float = self.compute_utility(tile)
+		var utility: float = self.compute_utility(tile, agent_pos)
 		var heap_node: HeapNode = HeapNode.new(tile, utility)
 		frontier_utilities.push(heap_node)
 	return frontier_utilities
@@ -148,8 +154,8 @@ func fill_enclosed_unknown_regions() -> void:
 func dda_ray_tiles(global_start: Vector2, global_end: Vector2) -> Array[Vector2i]:
 	var tiles: Array[Vector2i] = []
 	
-	var start: Vector2 = global_start / self._tile_size
-	var end: Vector2 = global_end / self._tile_size
+	var start: Vector2 = (global_start - self._grid_origin) / self._tile_size
+	var end: Vector2 = (global_end - self._grid_origin) / self._tile_size
 	
 	var dx = end.x - start.x
 	var dy = end.y - start.y
