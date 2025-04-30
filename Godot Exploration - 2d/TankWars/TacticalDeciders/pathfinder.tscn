@@ -1,0 +1,91 @@
+[gd_scene load_steps=6 format=3 uid="uid://cxhtqmgsfi31e"]
+
+[ext_resource type="Script" uid="uid://bbvvo20trsp8r" path="res://TankWars/TacticalDeciders/pathfinder.gd" id="1_c04e7"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_r1unm"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_4i764"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_nw0px"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_r1unm"]
+
+[node name="Pathfinder" type="Node2D"]
+script = ExtResource("1_c04e7")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_r1unm")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="PathFinder" type="Node" parent="Behavior"]
+script = ExtResource("3_4i764")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/PathFinder"]
+script = ExtResource("4_nw0px")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="new_destination" type="Node" parent="Behavior/PathFinder/Idle"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../RequestPath")
+event = &"new_destination"
+delay_in_seconds = "0.0"
+
+[node name="obstacle_ahead" type="Node" parent="Behavior/PathFinder/Idle"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../RequestPath")
+event = &"obstacle_ahead"
+delay_in_seconds = "0.0"
+
+[node name="waypoint_reached" type="Node" parent="Behavior/PathFinder/Idle"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../CheckWaypoints")
+event = &"waypoint_reached"
+delay_in_seconds = "0.0"
+
+[node name="RequestPath" type="Node" parent="Behavior/PathFinder"]
+script = ExtResource("4_nw0px")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="received_path" type="Node" parent="Behavior/PathFinder/RequestPath"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../ReceivedPath")
+event = &"received_path"
+delay_in_seconds = "0.0"
+
+[node name="ReceivedPath" type="Node" parent="Behavior/PathFinder"]
+script = ExtResource("4_nw0px")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="new_waypoint" type="Node" parent="Behavior/PathFinder/ReceivedPath"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../Idle")
+event = &"new_waypoint"
+delay_in_seconds = "0.0"
+
+[node name="no_path" type="Node" parent="Behavior/PathFinder/ReceivedPath"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../Idle")
+event = &"no_path"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://m8bym6l05tkl"
+
+[node name="CheckWaypoints" type="Node" parent="Behavior/PathFinder"]
+script = ExtResource("4_nw0px")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="next_waypoint" type="Node" parent="Behavior/PathFinder/CheckWaypoints"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../Idle")
+event = &"next_waypoint"
+delay_in_seconds = "0.0"
+
+[node name="destination_reached" type="Node" parent="Behavior/PathFinder/CheckWaypoints"]
+script = ExtResource("5_r1unm")
+to = NodePath("../../Idle")
+event = &"destination_reached"
+delay_in_seconds = "0.0"
+
+[connection signal="state_entered" from="Behavior/PathFinder/RequestPath" to="." method="_on_request_path_state_entered"]
+[connection signal="state_entered" from="Behavior/PathFinder/ReceivedPath" to="." method="_on_make_path_state_entered"]
+[connection signal="taken" from="Behavior/PathFinder/ReceivedPath/new_waypoint" to="." method="_on_new_waypoint_taken"]
+[connection signal="state_entered" from="Behavior/PathFinder/CheckWaypoints" to="." method="_on_check_waypoints_state_entered"]
+[connection signal="taken" from="Behavior/PathFinder/CheckWaypoints/next_waypoint" to="." method="_on_next_waypoint_taken"]
+[connection signal="taken" from="Behavior/PathFinder/CheckWaypoints/destination_reached" to="." method="_on_destination_reached_taken"]

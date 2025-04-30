@@ -1,0 +1,53 @@
+[gd_scene load_steps=9 format=3 uid="uid://c3uxintwm3bhr"]
+
+[ext_resource type="Script" uid="uid://v4xlufxrcnwl" path="res://TankWars/Sensors/fuel_tank.gd" id="1_8u1hk"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_ux321"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_hh5n2"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_vufmb"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_siw6a"]
+[ext_resource type="Script" uid="uid://cgpbecy3dmigh" path="res://addons/godot_state_charts/expression_guard.gd" id="6_58sxy"]
+
+[sub_resource type="Resource" id="Resource_jrmpm"]
+script = ExtResource("6_58sxy")
+expression = "fuelLevel < 10"
+metadata/_custom_type_script = "uid://cgpbecy3dmigh"
+
+[sub_resource type="Resource" id="Resource_sn4km"]
+script = ExtResource("6_58sxy")
+expression = "fuelLevel == 100"
+metadata/_custom_type_script = "uid://cgpbecy3dmigh"
+
+[node name="FuelTank" type="Node2D"]
+script = ExtResource("1_8u1hk")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_ux321")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="MonitorTank" type="Node" parent="Behavior"]
+script = ExtResource("3_hh5n2")
+initial_state = NodePath("FuelLevelOK")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="FuelLevelOK" type="Node" parent="Behavior/MonitorTank"]
+script = ExtResource("4_vufmb")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="fuel_low" type="Node" parent="Behavior/MonitorTank/FuelLevelOK"]
+script = ExtResource("5_siw6a")
+to = NodePath("../../FuelLevelLow")
+guard = SubResource("Resource_jrmpm")
+delay_in_seconds = "0.0"
+
+[node name="FuelLevelLow" type="Node" parent="Behavior/MonitorTank"]
+script = ExtResource("4_vufmb")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="fuel_full" type="Node" parent="Behavior/MonitorTank/FuelLevelLow"]
+script = ExtResource("5_siw6a")
+to = NodePath("../../FuelLevelOK")
+guard = SubResource("Resource_sn4km")
+delay_in_seconds = "0.0"
+
+[connection signal="taken" from="Behavior/MonitorTank/FuelLevelOK/fuel_low" to="." method="_on_fuel_low_taken"]
+[connection signal="taken" from="Behavior/MonitorTank/FuelLevelLow/fuel_full" to="." method="_on_fuel_full_taken"]

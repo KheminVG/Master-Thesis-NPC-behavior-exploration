@@ -1,0 +1,80 @@
+[gd_scene load_steps=14 format=3 uid="uid://cri8dxlf7bb04"]
+
+[ext_resource type="Script" uid="uid://dk2iio3sliuqo" path="res://TankWars/tank.gd" id="1_lqxvq"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_ti8eb"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_jc4t1"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_x5lrk"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_6gg55"]
+[ext_resource type="PackedScene" uid="uid://ersgjbcsmvwu" path="res://TankWars/Actuators/tank_body.tscn" id="6_cy1ea"]
+[ext_resource type="PackedScene" uid="uid://5cbnyjvujpxq" path="res://TankWars/Actuators/turret.tscn" id="7_inofr"]
+[ext_resource type="PackedScene" uid="uid://b0i3goxsi5vte" path="res://TankWars/Memorizers/enemy_tracker.tscn" id="8_takop"]
+[ext_resource type="PackedScene" uid="uid://cxa4n46xuic4k" path="res://TankWars/Memorizers/obstacle_map.tscn" id="9_ydgfn"]
+[ext_resource type="PackedScene" uid="uid://bfieuhe2in16j" path="res://TankWars/TacticalDeciders/attack_planner.tscn" id="10_qbkgm"]
+[ext_resource type="PackedScene" uid="uid://bsfcprv20pdnf" path="res://TankWars/TacticalDeciders/explore_planner.tscn" id="11_2ukr5"]
+[ext_resource type="PackedScene" uid="uid://cxhtqmgsfi31e" path="res://TankWars/TacticalDeciders/pathfinder.tscn" id="12_egtvy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_anb81"]
+
+[node name="Tank" type="CharacterBody2D"]
+script = ExtResource("1_lqxvq")
+
+[node name="collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_anb81")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_ti8eb")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="TankMovement" type="Node" parent="Behavior"]
+script = ExtResource("3_jc4t1")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/TankMovement"]
+script = ExtResource("4_x5lrk")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="new_waypoint" type="Node" parent="Behavior/TankMovement/Idle"]
+script = ExtResource("5_6gg55")
+to = NodePath("../../RotateBody")
+event = &"new_waypoint"
+delay_in_seconds = "0.0"
+
+[node name="RotateBody" type="Node" parent="Behavior/TankMovement"]
+script = ExtResource("4_x5lrk")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="move" type="Node" parent="Behavior/TankMovement/RotateBody"]
+script = ExtResource("5_6gg55")
+to = NodePath("../../Moving")
+event = &"move"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://m8bym6l05tkl"
+
+[node name="Moving" type="Node" parent="Behavior/TankMovement"]
+script = ExtResource("4_x5lrk")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="waypoint_reached" type="Node" parent="Behavior/TankMovement/Moving"]
+script = ExtResource("5_6gg55")
+to = NodePath("../../Idle")
+event = &"waypoint_reached"
+delay_in_seconds = "0.0"
+
+[node name="TankBody" parent="." instance=ExtResource("6_cy1ea")]
+
+[node name="Turret" parent="." instance=ExtResource("7_inofr")]
+
+[node name="EnemyTracker" parent="." instance=ExtResource("8_takop")]
+
+[node name="ObstacleMap" parent="." instance=ExtResource("9_ydgfn")]
+
+[node name="AttackPlanner" parent="." instance=ExtResource("10_qbkgm")]
+
+[node name="ExplorePlanner" parent="." instance=ExtResource("11_2ukr5")]
+
+[node name="Pathfinder" parent="." instance=ExtResource("12_egtvy")]
+
+[connection signal="state_entered" from="Behavior/TankMovement/RotateBody" to="." method="_on_rotate_body_state_entered"]
+[connection signal="state_processing" from="Behavior/TankMovement/Moving" to="." method="_on_moving_state_processing"]
+[connection signal="taken" from="Behavior/TankMovement/Moving/waypoint_reached" to="." method="_on_waypoint_reached_taken"]

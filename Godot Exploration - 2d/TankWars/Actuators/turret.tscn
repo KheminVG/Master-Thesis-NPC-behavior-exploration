@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=3 uid="uid://5cbnyjvujpxq"]
+
+[ext_resource type="Script" uid="uid://bxydeh65qwu7r" path="res://TankWars/Actuators/turret.gd" id="1_g8fju"]
+[ext_resource type="PackedScene" uid="uid://c6c221fld2khi" path="res://TankWars/Sensors/radar.tscn" id="1_pdd11"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_8uwdq"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_g8fju"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_xtqx7"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_hgl6s"]
+
+[node name="Turret" type="Node2D"]
+script = ExtResource("1_g8fju")
+
+[node name="Radar" parent="." instance=ExtResource("1_pdd11")]
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_8uwdq")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="TurretRotation" type="Node" parent="Behavior"]
+script = ExtResource("3_g8fju")
+initial_state = NodePath("Aiming")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Aiming" type="Node" parent="Behavior/TurretRotation"]
+script = ExtResource("4_xtqx7")
+
+[node name="turret_in_range" type="Node" parent="Behavior/TurretRotation/Aiming"]
+script = ExtResource("5_hgl6s")
+to = NodePath("../../InRange")
+event = &"turret_in_range"
+delay_in_seconds = "0.0"
+
+[node name="InRange" type="Node" parent="Behavior/TurretRotation"]
+script = ExtResource("4_xtqx7")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="check_aim" type="Node" parent="Behavior/TurretRotation/InRange"]
+script = ExtResource("5_hgl6s")
+to = NodePath("../../Aiming")
+delay_in_seconds = "1.0"
+
+[node name="aim_at" type="Node" parent="Behavior/TurretRotation/InRange"]
+script = ExtResource("5_hgl6s")
+to = NodePath("../../Aiming")
+event = &"aim_at"
+delay_in_seconds = "0.0"
+
+[connection signal="state_processing" from="Behavior/TurretRotation/Aiming" to="." method="_on_aiming_state_processing"]
+[connection signal="taken" from="Behavior/TurretRotation/Aiming/turret_in_range" to="." method="_on_turret_in_range_taken"]

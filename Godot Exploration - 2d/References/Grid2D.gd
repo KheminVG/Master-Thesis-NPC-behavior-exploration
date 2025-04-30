@@ -40,6 +40,14 @@ func set_tile_value(pos: Vector2i, value: int) -> void:
 	var index = pos.x + (pos.y * self._size.x)
 	self._data[index].val = value
 
+func fill_obstacles(obstacles: Array[Vector2i]) -> void:
+	for obs in obstacles:
+		self.set_tile_value(obs, 1)
+
+func fill_free_space(free_space: Array[Vector2i]) -> void:
+	for free in free_space:
+		self.set_tile_value(free, 0)
+
 func manhattan_distance(a: Vector2i, b: Vector2i):
 	return abs(a.x - b.x) + abs(a.y - b.y)
 
@@ -58,11 +66,13 @@ func tile_to_global(grid_pos: Vector2i) -> Vector2:
 	
 	return Vector2(global_x, global_y)
 
-func completed() -> bool:
-	for tile in self._data:
-		if tile.val == -1:
-			return false
-	return true
+func path_to_global(path: Array[Vector2i]) -> Array[Vector2]:
+	var global_path: Array[Vector2] = []
+	
+	for waypoint in path:
+		global_path.append(self.tile_to_global(waypoint))
+	
+	return global_path
 
 func explored() -> bool:
 	return self.get_frontier_tiles().is_empty()
@@ -113,6 +123,22 @@ func get_frontier_utilities(agent_pos: Vector2i) -> MaxHeap:
 		var heap_node: HeapNode = HeapNode.new(tile, utility)
 		frontier_utilities.push(heap_node)
 	return frontier_utilities
+
+func new_exploration_target(position: Vector2):
+	var current: Vector2i = self.global_to_tile(position)
+	var frontier: MaxHeap = self.get_frontier_utilities(current)
+	if not frontier.empty():
+		var target: Vector2i = frontier.pop().position
+	
+		# If the first returned target is the same as the current tile, we take the next best tile 
+		# in the frontier.
+		if target == current and not frontier.empty():
+			return frontier.pop().position
+		elif target == current and frontier.empty():
+			return null
+		return target
+	else: 
+		return null
 
 func fill_enclosed_unknown_regions() -> void: 
 	var visited: Dictionary = {}

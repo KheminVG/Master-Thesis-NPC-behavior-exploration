@@ -1,0 +1,75 @@
+[gd_scene load_steps=8 format=3 uid="uid://bfieuhe2in16j"]
+
+[ext_resource type="Script" uid="uid://6m4qtogvr57" path="res://TankWars/TacticalDeciders/attack_planner.gd" id="1_klhpx"]
+[ext_resource type="PackedScene" uid="uid://b0i3goxsi5vte" path="res://TankWars/Memorizers/enemy_tracker.tscn" id="2_joqeu"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="3_n54wo"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="4_watj6"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="5_dyfgg"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="6_k4lu7"]
+[ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="7_228ao"]
+
+[node name="AttackPlanner" type="Node2D"]
+script = ExtResource("1_klhpx")
+
+[node name="EnemyTracker" parent="." instance=ExtResource("2_joqeu")]
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("3_n54wo")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="CompoundState" type="Node" parent="Behavior"]
+script = ExtResource("4_watj6")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/CompoundState"]
+script = ExtResource("5_dyfgg")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="attack" type="Node" parent="Behavior/CompoundState/Idle"]
+script = ExtResource("6_k4lu7")
+to = NodePath("../../MovementAndShooting")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="MovementAndShooting" type="Node" parent="Behavior/CompoundState"]
+script = ExtResource("7_228ao")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="FollowEnemy" type="Node" parent="Behavior/CompoundState/MovementAndShooting"]
+script = ExtResource("5_dyfgg")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Shooting" type="Node" parent="Behavior/CompoundState/MovementAndShooting"]
+script = ExtResource("4_watj6")
+initial_state = NodePath("Ready")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Ready" type="Node" parent="Behavior/CompoundState/MovementAndShooting/Shooting"]
+script = ExtResource("5_dyfgg")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="shoot" type="Node" parent="Behavior/CompoundState/MovementAndShooting/Shooting/Ready"]
+script = ExtResource("6_k4lu7")
+to = NodePath("../../Shooting")
+event = &"ready_to_shoot"
+delay_in_seconds = "0.0"
+
+[node name="Shooting" type="Node" parent="Behavior/CompoundState/MovementAndShooting/Shooting"]
+script = ExtResource("5_dyfgg")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="reloaded" type="Node" parent="Behavior/CompoundState/MovementAndShooting/Shooting/Shooting"]
+script = ExtResource("6_k4lu7")
+to = NodePath("../../Ready")
+delay_in_seconds = "reload_time"
+
+[node name="explore" type="Node" parent="Behavior/CompoundState/MovementAndShooting"]
+script = ExtResource("6_k4lu7")
+to = NodePath("../../Idle")
+event = &"explore"
+delay_in_seconds = "0.0"
+
+[connection signal="taken" from="Behavior/CompoundState/Idle/attack" to="." method="_on_attack_taken"]
+[connection signal="state_processing" from="Behavior/CompoundState/MovementAndShooting/FollowEnemy" to="." method="_on_follow_enemy_state_processing"]
+[connection signal="taken" from="Behavior/CompoundState/MovementAndShooting/Shooting/Ready/shoot" to="." method="_on_shoot_taken"]

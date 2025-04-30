@@ -1,0 +1,50 @@
+[gd_scene load_steps=6 format=3 uid="uid://b0i3goxsi5vte"]
+
+[ext_resource type="Script" uid="uid://54u6segq7ikt" path="res://TankWars/Memorizers/enemy_tracker.gd" id="1_awfsd"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_ljt03"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_0ogt6"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_wle05"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_pavsm"]
+
+[node name="EnemyTracker" type="Node2D"]
+script = ExtResource("1_awfsd")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_ljt03")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="TrackEnemy" type="Node" parent="Behavior"]
+script = ExtResource("3_0ogt6")
+initial_state = NodePath("NoEnemy")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="NoEnemy" type="Node" parent="Behavior/TrackEnemy"]
+script = ExtResource("4_wle05")
+
+[node name="enemy_sighted" type="Node" parent="Behavior/TrackEnemy/NoEnemy"]
+script = ExtResource("5_pavsm")
+to = NodePath("../../EnemyPresent/TrackedByRadar")
+event = &"enemy_sighted"
+delay_in_seconds = "0.0"
+
+[node name="EnemyPresent" type="Node" parent="Behavior/TrackEnemy"]
+script = ExtResource("3_0ogt6")
+initial_state = NodePath("TrackedByRadar")
+
+[node name="TrackedByRadar" type="Node" parent="Behavior/TrackEnemy/EnemyPresent"]
+script = ExtResource("4_wle05")
+
+[node name="enemy_lost" type="Node" parent="Behavior/TrackEnemy/EnemyPresent/TrackedByRadar"]
+script = ExtResource("5_pavsm")
+to = NodePath("../../EnemyPosUnsure")
+event = &"enemy_lost"
+delay_in_seconds = "0.0"
+
+[node name="EnemyPosUnsure" type="Node" parent="Behavior/TrackEnemy/EnemyPresent"]
+script = ExtResource("4_wle05")
+
+[node name="enemy_sighted" type="Node" parent="Behavior/TrackEnemy/EnemyPresent/EnemyPosUnsure"]
+script = ExtResource("5_pavsm")
+to = NodePath("../../TrackedByRadar")
+event = &"enemy_sighted"
+delay_in_seconds = "0.0"

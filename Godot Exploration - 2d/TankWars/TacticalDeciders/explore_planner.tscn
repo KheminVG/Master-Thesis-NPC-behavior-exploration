@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://bsfcprv20pdnf"]
+
+[ext_resource type="Script" uid="uid://bg6p6l6rljy4p" path="res://TankWars/TacticalDeciders/explore_planner.gd" id="1_tqayn"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_84mbj"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_jxfi2"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_b4k2x"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_vjp1p"]
+
+[node name="ExplorePlanner" type="Node2D"]
+script = ExtResource("1_tqayn")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_84mbj")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="ExploreStrategy" type="Node" parent="Behavior"]
+script = ExtResource("3_jxfi2")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/ExploreStrategy"]
+script = ExtResource("4_b4k2x")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="explore" type="Node" parent="Behavior/ExploreStrategy/Idle"]
+script = ExtResource("5_vjp1p")
+to = NodePath("../../Exploring")
+event = &"explore"
+delay_in_seconds = "0.0"
+
+[node name="Exploring" type="Node" parent="Behavior/ExploreStrategy"]
+script = ExtResource("4_b4k2x")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="attack" type="Node" parent="Behavior/ExploreStrategy/Exploring"]
+script = ExtResource("5_vjp1p")
+to = NodePath("../../Idle")
+event = &"attack"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://m8bym6l05tkl"
+
+[node name="new_target" type="Node" parent="Behavior/ExploreStrategy/Exploring"]
+script = ExtResource("5_vjp1p")
+to = NodePath("..")
+event = &"new_target"
+delay_in_seconds = "0.0"
+
+[connection signal="taken" from="Behavior/ExploreStrategy/Exploring/new_target" to="." method="_on_new_target_taken"]
