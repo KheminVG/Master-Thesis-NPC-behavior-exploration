@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxa4n46xuic4k"]
+[gd_scene load_steps=6 format=3 uid="uid://cxa4n46xuic4k"]
 
 [ext_resource type="Script" uid="uid://bqdnjekr8moer" path="res://TankWars/Memorizers/obstacle_map.gd" id="1_slopa"]
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_4nank"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_4nank"]
 [ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="3_qcyp6"]
 [ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="4_kgtyo"]
 
@@ -12,12 +13,23 @@ script = ExtResource("1_slopa")
 script = ExtResource("2_4nank")
 metadata/_custom_type_script = "uid://cau6j0o0julfq"
 
-[node name="Idle" type="Node" parent="Behavior"]
+[node name="UpdateMap" type="Node" parent="Behavior"]
+script = ExtResource("3_4nank")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/UpdateMap"]
 script = ExtResource("3_qcyp6")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
 
-[node name="update" type="Node" parent="Behavior/Idle"]
+[node name="update" type="Node" parent="Behavior/UpdateMap/Idle"]
 script = ExtResource("4_kgtyo")
 to = NodePath("..")
 event = &"update_map"
 delay_in_seconds = "0.0"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

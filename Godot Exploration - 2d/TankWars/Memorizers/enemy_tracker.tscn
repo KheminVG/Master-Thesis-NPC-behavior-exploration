@@ -23,21 +23,27 @@ script = ExtResource("4_wle05")
 
 [node name="enemy_sighted" type="Node" parent="Behavior/TrackEnemy/NoEnemy"]
 script = ExtResource("5_pavsm")
-to = NodePath("../../EnemyPresent/TrackedByRadar")
+to = NodePath("../../EnemyPresent/EnemyPosKnown")
 event = &"enemy_sighted"
 delay_in_seconds = "0.0"
 
 [node name="EnemyPresent" type="Node" parent="Behavior/TrackEnemy"]
 script = ExtResource("3_0ogt6")
-initial_state = NodePath("TrackedByRadar")
+initial_state = NodePath("EnemyPosKnown")
 
-[node name="TrackedByRadar" type="Node" parent="Behavior/TrackEnemy/EnemyPresent"]
+[node name="EnemyPosKnown" type="Node" parent="Behavior/TrackEnemy/EnemyPresent"]
 script = ExtResource("4_wle05")
 
-[node name="enemy_lost" type="Node" parent="Behavior/TrackEnemy/EnemyPresent/TrackedByRadar"]
+[node name="enemy_lost" type="Node" parent="Behavior/TrackEnemy/EnemyPresent/EnemyPosKnown"]
 script = ExtResource("5_pavsm")
 to = NodePath("../../EnemyPosUnsure")
 event = &"enemy_lost"
+delay_in_seconds = "0.0"
+
+[node name="enemy_moved" type="Node" parent="Behavior/TrackEnemy/EnemyPresent/EnemyPosKnown"]
+script = ExtResource("5_pavsm")
+to = NodePath("..")
+event = &"enemy_moved"
 delay_in_seconds = "0.0"
 
 [node name="EnemyPosUnsure" type="Node" parent="Behavior/TrackEnemy/EnemyPresent"]
@@ -45,6 +51,10 @@ script = ExtResource("4_wle05")
 
 [node name="enemy_sighted" type="Node" parent="Behavior/TrackEnemy/EnemyPresent/EnemyPosUnsure"]
 script = ExtResource("5_pavsm")
-to = NodePath("../../TrackedByRadar")
+to = NodePath("../../EnemyPosKnown")
 event = &"enemy_sighted"
 delay_in_seconds = "0.0"
+
+[connection signal="state_entered" from="Behavior/TrackEnemy/EnemyPresent/EnemyPosKnown" to="." method="_on_enemy_pos_known_state_entered"]
+[connection signal="state_processing" from="Behavior/TrackEnemy/EnemyPresent/EnemyPosKnown" to="." method="_on_enemy_pos_known_state_processing"]
+[connection signal="state_entered" from="Behavior/TrackEnemy/EnemyPresent/EnemyPosUnsure" to="." method="_on_enemy_pos_unsure_state_entered"]

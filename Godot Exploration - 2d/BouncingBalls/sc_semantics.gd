@@ -1,12 +1,25 @@
 extends Node2D
 @onready var state_chart: StateChart = $StateChart
+@onready var got_event1: AtomicState = $StateChart/ParallelState/InternalEventLifeline/RegionReceive1/GotEvent
+@onready var got_event2: AtomicState = $StateChart/ParallelState/InternalEventLifeline/RegionReceive2/GotEvent
 
 func _ready() -> void:
-	state_chart.set_expression_property.call_deferred("x", 0)
+	state_chart.set_expression_property("x", 0)
 
+
+#-----------------------------------------------------------------------------#
+# MemoryProtocol
 func _on_assign_x_taken() -> void:
 	state_chart.set_expression_property("x", 1)
 
 
+#-----------------------------------------------------------------------------#
+# InputEventLifeline
 func _on_input_event_lifeline_state_entered() -> void:
 	state_chart.send_event("input0")
+
+
+#-----------------------------------------------------------------------------#
+# InternalEventLifeline
+func _on_transition_taken() -> void:
+	state_chart.send_event("internal0")

@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=3 uid="uid://bc6vvry8wo4ob"]
+
+[ext_resource type="Script" uid="uid://d2w63423vmavl" path="res://TankWars/StrategicDeciders/pilot_strategy.gd" id="1_urghy"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_xgbsq"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_kjhfg"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_lxeuo"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_74f71"]
+
+[node name="PilotStrategy" type="Node2D"]
+script = ExtResource("1_urghy")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_xgbsq")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="PilotStrategy" type="Node" parent="Behavior"]
+script = ExtResource("3_kjhfg")
+initial_state = NodePath("NormalOperation")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="NormalOperation" type="Node" parent="Behavior/PilotStrategy"]
+script = ExtResource("3_kjhfg")
+initial_state = NodePath("Exploring")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Exploring" type="Node" parent="Behavior/PilotStrategy/NormalOperation"]
+script = ExtResource("4_lxeuo")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="attack" type="Node" parent="Behavior/PilotStrategy/NormalOperation/Exploring"]
+script = ExtResource("5_74f71")
+to = NodePath("../../Attacking")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="Attacking" type="Node" parent="Behavior/PilotStrategy/NormalOperation"]
+script = ExtResource("4_lxeuo")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="enemy_lost" type="Node" parent="Behavior/PilotStrategy/NormalOperation/Attacking"]
+script = ExtResource("5_74f71")
+to = NodePath("../../Waiting")
+event = &"enemy_lost"
+delay_in_seconds = "0.0"
+
+[node name="Waiting" type="Node" parent="Behavior/PilotStrategy/NormalOperation"]
+script = ExtResource("4_lxeuo")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="enemy_found" type="Node" parent="Behavior/PilotStrategy/NormalOperation/Waiting"]
+script = ExtResource("5_74f71")
+to = NodePath("../../Attacking")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="explore" type="Node" parent="Behavior/PilotStrategy/NormalOperation/Waiting"]
+script = ExtResource("5_74f71")
+to = NodePath("../../Exploring")
+delay_in_seconds = "5.0"
+
+[connection signal="state_processing" from="Behavior/PilotStrategy/NormalOperation" to="." method="_on_normal_operation_state_processing"]
+[connection signal="state_entered" from="Behavior/PilotStrategy/NormalOperation/Exploring" to="." method="_on_exploring_state_entered"]
+[connection signal="state_entered" from="Behavior/PilotStrategy/NormalOperation/Attacking" to="." method="_on_attacking_state_entered"]

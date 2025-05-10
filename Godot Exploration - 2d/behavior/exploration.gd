@@ -106,7 +106,7 @@ func check_vision():
 	for ray in vision.get_children():
 		var seen_tiles: Array[Vector2i] = []
 		if ray.is_colliding():
-			var collision = round(ray.get_collision_point())
+			var collision = ray.get_collision_point()
 			
 			if global_position.distance_to(collision) <= 24.0:
 				set_state(State.AVOID)
@@ -120,7 +120,7 @@ func check_vision():
 			if not int(collision.x) % map._tile_size and not int(collision.y) % map._tile_size:
 				continue
 			
-						# We use the collision normal correct the position of the collision before translating 
+			# We use the collision normal correct the position of the collision before translating 
 			# the coordinates to the map grid.
 			var normal = ray.get_collision_normal()
 			

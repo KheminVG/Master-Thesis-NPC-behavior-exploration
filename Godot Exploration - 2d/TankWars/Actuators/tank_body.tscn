@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ersgjbcsmvwu"]
+[gd_scene load_steps=8 format=3 uid="uid://ersgjbcsmvwu"]
 
 [ext_resource type="Script" uid="uid://0cl3jxy74bd8" path="res://TankWars/Actuators/tank_body.gd" id="1_1vct5"]
 [ext_resource type="PackedScene" uid="uid://c6c221fld2khi" path="res://TankWars/Sensors/radar.tscn" id="2_fme24"]
@@ -7,10 +7,16 @@
 [ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="5_5hxh0"]
 [ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="6_yrhgf"]
 
-[node name="TankBody" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_htdy2"]
+size = Vector2(60, 40)
+
+[node name="TankBody" type="Area2D"]
 script = ExtResource("1_1vct5")
 
 [node name="Radar" parent="." instance=ExtResource("2_fme24")]
+
+[node name="collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_htdy2")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("3_fx6b7")
@@ -39,6 +45,7 @@ metadata/_custom_type_script = "uid://dyiggrr357tov"
 [node name="rotated" type="Node" parent="Behavior/TankBodyRotation/Rotating"]
 script = ExtResource("6_yrhgf")
 to = NodePath("../../Idle")
+event = &"rotated"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://m8bym6l05tkl"
 

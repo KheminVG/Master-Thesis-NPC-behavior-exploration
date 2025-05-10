@@ -38,15 +38,23 @@ func get_tile(pos: Vector2i) -> Grid2DTile:
 
 func set_tile_value(pos: Vector2i, value: int) -> void:
 	var index = pos.x + (pos.y * self._size.x)
+	if index < 0 or index >= self._data.size():
+		return
 	self._data[index].val = value
 
-func fill_obstacles(obstacles: Array[Vector2i]) -> void:
-	for obs in obstacles:
-		self.set_tile_value(obs, 1)
-
-func fill_free_space(free_space: Array[Vector2i]) -> void:
-	for free in free_space:
-		self.set_tile_value(free, 0)
+func update_map(data: Dictionary, ray_origin: Vector2) -> void:
+	var collisions: Array[Vector2] = data["collisions"]
+	var normals: Array[Vector2] = data["normals"]
+	
+	var obstacles: Array[Vector2] = []
+	for i in range(collisions.size()):
+		if normals[i] != Vector2.ZERO:
+			var obstacle_tile = self.global_to_tile(collisions[i] - normals[i])
+			self.set_tile_value(obstacle_tile, 1)
+		
+		var free_tiles = self.dda_ray_tiles(ray_origin, collisions[i] + normals[i])
+		for tile in free_tiles:
+			self.set_tile_value(tile, 0)
 
 func manhattan_distance(a: Vector2i, b: Vector2i):
 	return abs(a.x - b.x) + abs(a.y - b.y)
@@ -106,12 +114,12 @@ func compute_utility(pos: Vector2i, agent_pos: Vector2i, radius: int = 2) -> flo
 		for dy in range(-radius, radius+1):
 			var neighbor: Vector2i = pos + Vector2i(dx, dy)
 			if 0 <= neighbor.x and neighbor.x < self._size.x and 0 <= neighbor.y and neighbor.y < self._size.y and self.get_tile(neighbor).val == -1:
-				count += 1
+				count += 2
 	
 	var utility = count
 	var distance = self.manhattan_distance(agent_pos, pos)
 	if distance > 0:
-		utility /= distance
+		utility -= distance
 	
 	return utility
 
@@ -128,12 +136,12 @@ func new_exploration_target(position: Vector2):
 	var current: Vector2i = self.global_to_tile(position)
 	var frontier: MaxHeap = self.get_frontier_utilities(current)
 	if not frontier.empty():
-		var target: Vector2i = frontier.pop().position
+		var target: Vector2i = frontier.pop().pos
 	
 		# If the first returned target is the same as the current tile, we take the next best tile 
 		# in the frontier.
 		if target == current and not frontier.empty():
-			return frontier.pop().position
+			return frontier.pop().pos
 		elif target == current and frontier.empty():
 			return null
 		return target

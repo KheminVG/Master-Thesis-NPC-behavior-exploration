@@ -1,0 +1,106 @@
+[gd_scene load_steps=14 format=3 uid="uid://blmnl0b0h0tu0"]
+
+[ext_resource type="Texture2D" uid="uid://dh10j38lptsbq" path="res://assets/kenney_top-down-shooter/PNG/soldier.png" id="1_7yxiy"]
+[ext_resource type="Script" uid="uid://dw1ulgmneo6td" path="res://Platooning/infantry.gd" id="1_flc01"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_0qg2e"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_8fuay"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_a5dv5"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_1s0u0"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="6_13v80"]
+[ext_resource type="PackedScene" uid="uid://cxa4n46xuic4k" path="res://TankWars/Memorizers/obstacle_map.tscn" id="7_jqq1a"]
+[ext_resource type="PackedScene" uid="uid://c6c221fld2khi" path="res://TankWars/Sensors/radar.tscn" id="8_flc01"]
+[ext_resource type="PackedScene" uid="uid://bsfcprv20pdnf" path="res://TankWars/TacticalDeciders/explore_planner.tscn" id="9_qfajf"]
+[ext_resource type="PackedScene" uid="uid://cxhtqmgsfi31e" path="res://TankWars/TacticalDeciders/pathfinder.tscn" id="10_6fisv"]
+[ext_resource type="PackedScene" uid="uid://biqkgdijpe10c" path="res://Platooning/StrategicDeciders/infantry_strategy.tscn" id="12_qfajf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_13v80"]
+radius = 18.1108
+
+[node name="infantry" type="CharacterBody2D"]
+script = ExtResource("1_flc01")
+
+[node name="sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_7yxiy")
+
+[node name="collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_13v80")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_0qg2e")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="InfantryMovement" type="Node" parent="Behavior"]
+script = ExtResource("3_8fuay")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="Behavior/InfantryMovement"]
+script = ExtResource("4_a5dv5")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="new_waypoint" type="Node" parent="Behavior/InfantryMovement/Idle"]
+script = ExtResource("5_1s0u0")
+to = NodePath("../../RotateBody")
+event = &"new_waypoint"
+delay_in_seconds = "0.0"
+
+[node name="RotateBody" type="Node" parent="Behavior/InfantryMovement"]
+script = ExtResource("4_a5dv5")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="move" type="Node" parent="Behavior/InfantryMovement/RotateBody"]
+script = ExtResource("5_1s0u0")
+to = NodePath("../../Moving")
+event = &"move"
+delay_in_seconds = "0.0"
+
+[node name="stop" type="Node" parent="Behavior/InfantryMovement/RotateBody"]
+script = ExtResource("5_1s0u0")
+to = NodePath("../../Idle")
+event = &"stop"
+delay_in_seconds = "0.0"
+
+[node name="Moving" type="Node" parent="Behavior/InfantryMovement"]
+script = ExtResource("4_a5dv5")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="waypoint_reached" type="Node" parent="Behavior/InfantryMovement/Moving"]
+script = ExtResource("5_1s0u0")
+to = NodePath("../../Idle")
+event = &"waypoint_reached"
+delay_in_seconds = "0.0"
+
+[node name="stop" type="Node" parent="Behavior/InfantryMovement/Moving"]
+script = ExtResource("5_1s0u0")
+to = NodePath("../../Idle")
+event = &"stop"
+delay_in_seconds = "0.0"
+
+[node name="ObstacleMap" parent="." instance=ExtResource("7_jqq1a")]
+
+[node name="Radar" parent="." instance=ExtResource("8_flc01")]
+
+[node name="ExplorePlanner" parent="." instance=ExtResource("9_qfajf")]
+
+[node name="Pathfinder" parent="." instance=ExtResource("10_6fisv")]
+
+[node name="InfantryStrategy" parent="." instance=ExtResource("12_qfajf")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="StateChartDebugger" parent="CanvasLayer" instance=ExtResource("6_13v80")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+offset_left = -542.0
+offset_bottom = 628.0
+grow_horizontal = 0
+grow_vertical = 1
+size_flags_horizontal = 8
+size_flags_vertical = 0
+initial_node_to_watch = NodePath("../../InfantryStrategy")
+
+[connection signal="state_entered" from="Behavior/InfantryMovement" to="." method="_on_infantry_movement_state_entered"]
+[connection signal="state_processing" from="Behavior/InfantryMovement/RotateBody" to="." method="_on_rotate_body_state_processing"]
+[connection signal="state_physics_processing" from="Behavior/InfantryMovement/Moving" to="." method="_on_moving_state_physics_processing"]
+[connection signal="taken" from="Behavior/InfantryMovement/Moving/waypoint_reached" to="." method="_on_waypoint_reached_taken"]

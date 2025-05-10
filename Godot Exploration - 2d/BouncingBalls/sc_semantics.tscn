@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dpw4gqwmpfe5e"]
+[gd_scene load_steps=26 format=3 uid="uid://dpw4gqwmpfe5e"]
 
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="1_0ag1n"]
 [ext_resource type="Script" uid="uid://cl75pkl5l8lau" path="res://BouncingBalls/sc_semantics.gd" id="1_7xljh"]
@@ -8,6 +8,60 @@
 [ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_1iswr"]
 [ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_ploh2"]
 [ext_resource type="Script" uid="uid://cgpbecy3dmigh" path="res://addons/godot_state_charts/expression_guard.gd" id="7_7xljh"]
+[ext_resource type="Script" uid="uid://c41gily0vosn7" path="res://addons/godot_state_charts/guard.gd" id="8_kkye2"]
+[ext_resource type="Script" uid="uid://bpmcjqjecisib" path="res://addons/godot_state_charts/state_is_active_guard.gd" id="9_g1l08"]
+[ext_resource type="Script" uid="uid://j83wx22slqlm" path="res://addons/godot_state_charts/not_guard.gd" id="10_8bunp"]
+[ext_resource type="Script" uid="uid://pw277ma67hja" path="res://addons/godot_state_charts/all_of_guard.gd" id="11_yttom"]
+
+[sub_resource type="Resource" id="Resource_ggnlb"]
+script = ExtResource("9_g1l08")
+state = NodePath("../../../RegionReceive1/GotEvent")
+metadata/_custom_type_script = "uid://bpmcjqjecisib"
+
+[sub_resource type="Resource" id="Resource_8t620"]
+script = ExtResource("9_g1l08")
+state = NodePath("../../../RegionReceive2/GotEvent")
+metadata/_custom_type_script = "uid://bpmcjqjecisib"
+
+[sub_resource type="Resource" id="Resource_fsrxh"]
+script = ExtResource("10_8bunp")
+guard = SubResource("Resource_8t620")
+metadata/_custom_type_script = "uid://j83wx22slqlm"
+
+[sub_resource type="Resource" id="Resource_seyq0"]
+script = ExtResource("11_yttom")
+guards = Array[ExtResource("8_kkye2")]([SubResource("Resource_ggnlb"), SubResource("Resource_fsrxh")])
+metadata/_custom_type_script = "uid://pw277ma67hja"
+
+[sub_resource type="Resource" id="Resource_plpm3"]
+script = ExtResource("9_g1l08")
+state = NodePath("../../../RegionReceive1/GotEvent")
+metadata/_custom_type_script = "uid://bpmcjqjecisib"
+
+[sub_resource type="Resource" id="Resource_lya64"]
+script = ExtResource("9_g1l08")
+state = NodePath("../../../RegionReceive2/GotEvent")
+metadata/_custom_type_script = "uid://bpmcjqjecisib"
+
+[sub_resource type="Resource" id="Resource_olyqa"]
+script = ExtResource("11_yttom")
+guards = Array[ExtResource("8_kkye2")]([SubResource("Resource_plpm3"), SubResource("Resource_lya64")])
+metadata/_custom_type_script = "uid://pw277ma67hja"
+
+[sub_resource type="Resource" id="Resource_kkye2"]
+script = ExtResource("9_g1l08")
+state = NodePath("../../../RegionReceive1/GotEvent")
+metadata/_custom_type_script = "uid://bpmcjqjecisib"
+
+[sub_resource type="Resource" id="Resource_g1l08"]
+script = ExtResource("9_g1l08")
+state = NodePath("../../../RegionReceive2/GotEvent")
+metadata/_custom_type_script = "uid://bpmcjqjecisib"
+
+[sub_resource type="Resource" id="Resource_8bunp"]
+script = ExtResource("11_yttom")
+guards = Array[ExtResource("8_kkye2")]([SubResource("Resource_kkye2"), SubResource("Resource_g1l08")])
+metadata/_custom_type_script = "uid://pw277ma67hja"
 
 [sub_resource type="Resource" id="Resource_umojb"]
 script = ExtResource("7_7xljh")
@@ -28,10 +82,12 @@ metadata/_custom_type_script = "uid://cgpbecy3dmigh"
 script = ExtResource("1_7xljh")
 
 [node name="StateChartDebugger" parent="." instance=ExtResource("2_umojb")]
-offset_left = -437.0
-offset_top = -473.0
-offset_right = 441.0
-offset_bottom = 467.0
+offset_left = -685.0
+offset_top = -476.0
+offset_right = 690.0
+offset_bottom = 464.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 initial_node_to_watch = NodePath("../StateChart")
 
 [node name="StateChart" type="Node" parent="."]
@@ -99,6 +155,108 @@ script = ExtResource("4_1iswr")
 
 [node name="FirstComboStep" type="Node" parent="StateChart/ParallelState/InputEventLifeline"]
 script = ExtResource("4_1iswr")
+
+[node name="InternalEventLifeline" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("2_7xljh")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="RegionBroadcast" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
+script = ExtResource("3_umojb")
+initial_state = NodePath("Initial")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Initial" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../Done")
+delay_in_seconds = "0.0"
+
+[node name="Done" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="RegionReceive1" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
+script = ExtResource("3_umojb")
+initial_state = NodePath("Initial")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Initial" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive1"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive1/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../GotEvent")
+event = &"internal0"
+delay_in_seconds = "0.0"
+
+[node name="GotEvent" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive1"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="RegionReceive2" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
+script = ExtResource("3_umojb")
+initial_state = NodePath("Initial")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Initial" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive2"]
+script = ExtResource("4_1iswr")
+
+[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive2/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../GotEvent")
+event = &"internal0"
+delay_in_seconds = "0.0"
+
+[node name="GotEvent" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive2"]
+script = ExtResource("4_1iswr")
+
+[node name="InternalEventLifeline" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
+script = ExtResource("3_umojb")
+initial_state = NodePath("Initial")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Initial" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline"]
+script = ExtResource("4_1iswr")
+
+[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../NextSmallStep")
+guard = SubResource("Resource_seyq0")
+delay_in_seconds = "0.0"
+
+[node name="Transition2" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../Remainder")
+guard = SubResource("Resource_olyqa")
+delay_in_seconds = "0.0"
+
+[node name="Transition3" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../Queue")
+delay_in_seconds = "0.0"
+
+[node name="NextSmallStep" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline"]
+script = ExtResource("4_1iswr")
+
+[node name="Remainder" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline"]
+script = ExtResource("4_1iswr")
+
+[node name="Queue" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline"]
+script = ExtResource("4_1iswr")
+
+[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline/Queue"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../NextComboStep")
+guard = SubResource("Resource_8bunp")
+delay_in_seconds = "0.0"
+
+[node name="NextComboStep" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/InternalEventLifeline"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
 
 [node name="MemoryProtocol" type="Node" parent="StateChart/ParallelState"]
 script = ExtResource("2_7xljh")
@@ -187,4 +345,5 @@ script = ExtResource("4_1iswr")
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [connection signal="state_entered" from="StateChart/ParallelState/InputEventLifeline" to="." method="_on_input_event_lifeline_state_entered"]
+[connection signal="taken" from="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast/Initial/Transition" to="." method="_on_transition_taken"]
 [connection signal="taken" from="StateChart/ParallelState/MemoryProtocol/RegionAssign/Initial/assign_x" to="." method="_on_assign_x_taken"]

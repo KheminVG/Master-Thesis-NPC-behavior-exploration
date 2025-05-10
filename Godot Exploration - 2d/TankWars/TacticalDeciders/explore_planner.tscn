@@ -43,6 +43,6 @@ metadata/_custom_type_script = "uid://m8bym6l05tkl"
 script = ExtResource("5_vjp1p")
 to = NodePath("..")
 event = &"new_target"
-delay_in_seconds = "0.0"
+delay_in_seconds = "0.5"
 
-[connection signal="taken" from="Behavior/ExploreStrategy/Exploring/new_target" to="." method="_on_new_target_taken"]
+[connection signal="state_entered" from="Behavior/ExploreStrategy/Exploring" to="." method="_on_exploring_state_entered"]

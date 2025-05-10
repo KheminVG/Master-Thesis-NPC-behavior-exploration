@@ -6,7 +6,7 @@ class_name GameInstance
 @export var TILE_SIZE: int = 64
 @onready var area: CollisionShape2D = $Bounds/area
 
-var game_state:GameState; # the current game state
+var game_state: GameState; # the current game state
 var agent_count = 0
 var agents_finished = 0
 

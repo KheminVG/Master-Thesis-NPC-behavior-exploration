@@ -10,6 +10,28 @@
 [node name="Radar" type="Node2D"]
 script = ExtResource("1_sjdv2")
 
+[node name="Vision" type="Node2D" parent="."]
+
+[node name="ray_left" type="RayCast2D" parent="Vision"]
+target_position = Vector2(282, -100)
+collide_with_areas = true
+
+[node name="ray_middle_left" type="RayCast2D" parent="Vision"]
+target_position = Vector2(295, -50)
+collide_with_areas = true
+
+[node name="ray_front" type="RayCast2D" parent="Vision"]
+target_position = Vector2(300, 0)
+collide_with_areas = true
+
+[node name="ray_middle_right" type="RayCast2D" parent="Vision"]
+target_position = Vector2(295, 50)
+collide_with_areas = true
+
+[node name="ray_right" type="RayCast2D" parent="Vision"]
+target_position = Vector2(282, 100)
+collide_with_areas = true
+
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("2_epnyi")
 metadata/_custom_type_script = "uid://cau6j0o0julfq"
@@ -52,24 +74,29 @@ metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
 script = ExtResource("5_cgwxm")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
 
-[node name="obstacle_sighted" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Checking"]
+[node name="processing" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Checking"]
 script = ExtResource("6_epnyi")
 to = NodePath("../../Waiting")
-event = &"obstacle_sighted"
-delay_in_seconds = "0.0"
+delay_in_seconds = "0.1"
 
 [node name="Waiting" type="Node" parent="Behavior/Announcements/AnnounceObstacles"]
 script = ExtResource("5_cgwxm")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
 
-[node name="check" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Waiting"]
+[node name="done" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Waiting"]
 script = ExtResource("6_epnyi")
 to = NodePath("../../Checking")
-delay_in_seconds = "1.0"
+event = &"done"
+delay_in_seconds = "0.0"
+
+[node name="check_again" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Waiting"]
+script = ExtResource("6_epnyi")
+to = NodePath("../../Checking")
+delay_in_seconds = "0.5"
 
 [connection signal="state_processing" from="Behavior/Announcements/AnnounceEnemy/NoEnemy" to="." method="_on_no_enemy_state_processing"]
 [connection signal="taken" from="Behavior/Announcements/AnnounceEnemy/NoEnemy/enemy_sighted" to="." method="_on_enemy_sighted_taken"]
 [connection signal="state_processing" from="Behavior/Announcements/AnnounceEnemy/EnemySighted" to="." method="_on_enemy_sighted_state_processing"]
 [connection signal="taken" from="Behavior/Announcements/AnnounceEnemy/EnemySighted/enemy_lost" to="." method="_on_enemy_lost_taken"]
 [connection signal="state_processing" from="Behavior/Announcements/AnnounceObstacles/Checking" to="." method="_on_checking_state_processing"]
-[connection signal="taken" from="Behavior/Announcements/AnnounceObstacles/Checking/obstacle_sighted" to="." method="_on_obstacle_sighted_taken"]
+[connection signal="taken" from="Behavior/Announcements/AnnounceObstacles/Checking/processing" to="." method="_on_processing_taken"]

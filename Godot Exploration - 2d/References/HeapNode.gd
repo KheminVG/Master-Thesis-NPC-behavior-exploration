@@ -1,11 +1,11 @@
 class_name HeapNode
 extends RefCounted
 
-var position: Vector2i
+var pos: Vector2i
 var val
 
-func _init(position: Vector2i, value) -> void:
-	self.position = position
+func _init(pos: Vector2i, value) -> void:
+	self.pos = pos
 	self.val = value
 
 func lt(other: HeapNode) -> bool:

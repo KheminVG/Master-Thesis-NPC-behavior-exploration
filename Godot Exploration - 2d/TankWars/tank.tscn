@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://cri8dxlf7bb04"]
+[gd_scene load_steps=16 format=3 uid="uid://cri8dxlf7bb04"]
 
 [ext_resource type="Script" uid="uid://dk2iio3sliuqo" path="res://TankWars/tank.gd" id="1_lqxvq"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="2_egtvy"]
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_ti8eb"]
 [ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_jc4t1"]
 [ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_x5lrk"]
@@ -12,14 +13,16 @@
 [ext_resource type="PackedScene" uid="uid://bfieuhe2in16j" path="res://TankWars/TacticalDeciders/attack_planner.tscn" id="10_qbkgm"]
 [ext_resource type="PackedScene" uid="uid://bsfcprv20pdnf" path="res://TankWars/TacticalDeciders/explore_planner.tscn" id="11_2ukr5"]
 [ext_resource type="PackedScene" uid="uid://cxhtqmgsfi31e" path="res://TankWars/TacticalDeciders/pathfinder.tscn" id="12_egtvy"]
+[ext_resource type="PackedScene" uid="uid://bc6vvry8wo4ob" path="res://TankWars/StrategicDeciders/pilot_strategy.tscn" id="13_2ukr5"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_anb81"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_egtvy"]
 
 [node name="Tank" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_lqxvq")
 
 [node name="collision" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_anb81")
+shape = SubResource("CircleShape2D_egtvy")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("2_ti8eb")
@@ -51,6 +54,12 @@ event = &"move"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://m8bym6l05tkl"
 
+[node name="stop" type="Node" parent="Behavior/TankMovement/RotateBody"]
+script = ExtResource("5_6gg55")
+to = NodePath("../../Idle")
+event = &"stop"
+delay_in_seconds = "0.0"
+
 [node name="Moving" type="Node" parent="Behavior/TankMovement"]
 script = ExtResource("4_x5lrk")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
@@ -59,6 +68,12 @@ metadata/_custom_type_script = "uid://dyiggrr357tov"
 script = ExtResource("5_6gg55")
 to = NodePath("../../Idle")
 event = &"waypoint_reached"
+delay_in_seconds = "0.0"
+
+[node name="stop" type="Node" parent="Behavior/TankMovement/Moving"]
+script = ExtResource("5_6gg55")
+to = NodePath("../../Idle")
+event = &"stop"
 delay_in_seconds = "0.0"
 
 [node name="TankBody" parent="." instance=ExtResource("6_cy1ea")]
@@ -75,6 +90,24 @@ delay_in_seconds = "0.0"
 
 [node name="Pathfinder" parent="." instance=ExtResource("12_egtvy")]
 
+[node name="PilotStrategy" parent="." instance=ExtResource("13_2ukr5")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="StateChartDebugger" parent="CanvasLayer" instance=ExtResource("2_egtvy")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+offset_left = -542.0
+offset_bottom = 628.0
+grow_horizontal = 0
+grow_vertical = 1
+size_flags_horizontal = 8
+size_flags_vertical = 0
+initial_node_to_watch = NodePath("../../PilotStrategy")
+
+[connection signal="state_entered" from="Behavior/TankMovement" to="." method="_on_tank_movement_state_entered"]
 [connection signal="state_entered" from="Behavior/TankMovement/RotateBody" to="." method="_on_rotate_body_state_entered"]
-[connection signal="state_processing" from="Behavior/TankMovement/Moving" to="." method="_on_moving_state_processing"]
+[connection signal="state_physics_processing" from="Behavior/TankMovement/Moving" to="." method="_on_moving_state_physics_processing"]
 [connection signal="taken" from="Behavior/TankMovement/Moving/waypoint_reached" to="." method="_on_waypoint_reached_taken"]

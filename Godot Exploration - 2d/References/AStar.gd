@@ -18,20 +18,20 @@ func astar(grid: Grid2D, start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
 		var current: AStarNode = frontier.pop()
 		
 		# Early exit when frontier has found the goal position
-		if current.position == goal:
+		if current.pos == goal:
 			# Reconstruct path
 			var path: Array[Vector2i] = []
 			while current:
-				path.append(current.position)
+				path.append(current.pos)
 				current = current.parent
 			path.reverse()
 			return path
 			# TODO maybe not reverse here, so we can just use pop_back to empty out path
 		
-		reached[current.position] = true
+		reached[current.pos] = true
 		
 		for direction in NEIGHBOR_DIRECTIONS:
-			var neighbor_pos: Vector2i = current.position + direction
+			var neighbor_pos: Vector2i = current.pos + direction
 			
 			# Grid Bounds Check
 			if 0 <= neighbor_pos.x and neighbor_pos.x < grid._size.x and 0 <= neighbor_pos.y and neighbor_pos.y < grid._size.y:
@@ -48,7 +48,7 @@ func astar(grid: Grid2D, start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
 				# Skip insertion of neighbor if it is already in the frontier
 				var skip = false
 				for n in frontier._data:
-					if n.position == neighbor_pos and n.val <= neighbor_node.val:
+					if n.pos == neighbor_pos and n.val <= neighbor_node.val:
 						skip = true
 						break
 				
@@ -63,7 +63,7 @@ class AStarNode extends HeapNode:
 	var parent: AStarNode
 	
 	func _init(pos: Vector2i, g: int, h: int, parent: AStarNode = null) -> void:
-		self.position = pos
+		self.pos = pos
 		self.g_cost = g
 		self.h_cost = h
 		self.val = g + h
