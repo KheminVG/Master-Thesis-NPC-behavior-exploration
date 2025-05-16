@@ -160,24 +160,6 @@ script = ExtResource("4_1iswr")
 script = ExtResource("2_7xljh")
 metadata/_custom_type_script = "uid://dtlmgewt76wtf"
 
-[node name="RegionBroadcast" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
-script = ExtResource("3_umojb")
-initial_state = NodePath("Initial")
-metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
-
-[node name="Initial" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast"]
-script = ExtResource("4_1iswr")
-metadata/_custom_type_script = "uid://dyiggrr357tov"
-
-[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast/Initial"]
-script = ExtResource("5_ploh2")
-to = NodePath("../../Done")
-delay_in_seconds = "0.0"
-
-[node name="Done" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast"]
-script = ExtResource("4_1iswr")
-metadata/_custom_type_script = "uid://dyiggrr357tov"
-
 [node name="RegionReceive1" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
 script = ExtResource("3_umojb")
 initial_state = NodePath("Initial")
@@ -194,6 +176,24 @@ event = &"internal0"
 delay_in_seconds = "0.0"
 
 [node name="GotEvent" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionReceive1"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="RegionBroadcast" type="Node" parent="StateChart/ParallelState/InternalEventLifeline"]
+script = ExtResource("3_umojb")
+initial_state = NodePath("Initial")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Initial" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast"]
+script = ExtResource("4_1iswr")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Transition" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast/Initial"]
+script = ExtResource("5_ploh2")
+to = NodePath("../../Done")
+delay_in_seconds = "0.0"
+
+[node name="Done" type="Node" parent="StateChart/ParallelState/InternalEventLifeline/RegionBroadcast"]
 script = ExtResource("4_1iswr")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
 

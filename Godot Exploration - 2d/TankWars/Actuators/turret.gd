@@ -28,9 +28,6 @@ func _on_aiming_state_processing(delta: float) -> void:
 		var target_direction = self.global_position.direction_to(self.target)
 		self.rotation = lerp_angle(self.rotation, target_direction.angle(), delta * 20)
 		
-		var q = radar.enemy_in_front()
-		if q:
-			pass
 		var target_distance = self.global_position.distance_to(self.target)
 		if radar.enemy_in_front() and target_distance <= self._range:
 			self.behavior.send_event("turret_in_range")
