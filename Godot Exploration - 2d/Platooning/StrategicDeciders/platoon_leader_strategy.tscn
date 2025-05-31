@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds0ncl53khj7n"]
+
+[ext_resource type="Script" uid="uid://chimjm8g46gaq" path="res://Platooning/StrategicDeciders/platoon_leader_strategy.gd" id="1_l3fjo"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_81byc"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_rq6od"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_1q2xn"]
+
+[node name="PlatoonLeaderStrategy" type="Node2D"]
+script = ExtResource("1_l3fjo")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_81byc")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="LeaderMode" type="Node" parent="Behavior"]
+script = ExtResource("3_rq6od")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/LeaderMode"]
+script = ExtResource("4_1q2xn")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Command" type="Node" parent="Behavior/LeaderMode"]
+script = ExtResource("4_1q2xn")
+metadata/_custom_type_script = "uid://dyiggrr357tov"

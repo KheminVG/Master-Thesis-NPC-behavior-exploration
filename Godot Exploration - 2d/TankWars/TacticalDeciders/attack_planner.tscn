@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://bfieuhe2in16j"]
+[gd_scene load_steps=7 format=3 uid="uid://bfieuhe2in16j"]
 
 [ext_resource type="Script" uid="uid://6m4qtogvr57" path="res://TankWars/TacticalDeciders/attack_planner.gd" id="1_klhpx"]
-[ext_resource type="PackedScene" uid="uid://b0i3goxsi5vte" path="res://TankWars/Memorizers/enemy_tracker.tscn" id="2_joqeu"]
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="3_n54wo"]
 [ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="4_watj6"]
 [ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="5_dyfgg"]
@@ -10,8 +9,6 @@
 
 [node name="AttackPlanner" type="Node2D"]
 script = ExtResource("1_klhpx")
-
-[node name="EnemyTracker" parent="." instance=ExtResource("2_joqeu")]
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("3_n54wo")
@@ -64,10 +61,10 @@ script = ExtResource("6_k4lu7")
 to = NodePath("../../Ready")
 delay_in_seconds = "reload_time"
 
-[node name="explore" type="Node" parent="Behavior/CompoundState/MovementAndShooting"]
+[node name="stop" type="Node" parent="Behavior/CompoundState/MovementAndShooting"]
 script = ExtResource("6_k4lu7")
 to = NodePath("../../Idle")
-event = &"explore"
+event = &"stop"
 delay_in_seconds = "0.0"
 
 [connection signal="taken" from="Behavior/CompoundState/Idle/attack" to="." method="_on_attack_taken"]

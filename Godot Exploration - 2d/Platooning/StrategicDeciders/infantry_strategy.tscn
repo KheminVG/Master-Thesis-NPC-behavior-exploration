@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://biqkgdijpe10c"]
+[gd_scene load_steps=7 format=3 uid="uid://biqkgdijpe10c"]
 
 [ext_resource type="Script" uid="uid://k3jgt78r52tt" path="res://Platooning/StrategicDeciders/infantry_strategy.gd" id="1_ejj7o"]
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_5tqvn"]
 [ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_bsbwr"]
 [ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_1xst6"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_ejj7o"]
+[ext_resource type="Script" uid="uid://cs7l2ibshw7ya" path="res://addons/godot_state_charts/history_state.gd" id="6_5tqvn"]
 
 [node name="InfantryStrategy" type="Node2D"]
 script = ExtResource("1_ejj7o")
@@ -19,12 +21,94 @@ metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
 
 [node name="NormalOperation" type="Node" parent="Behavior/InfantryStrategy"]
 script = ExtResource("3_bsbwr")
+initial_state = NodePath("Passive")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Passive" type="Node" parent="Behavior/InfantryStrategy/NormalOperation"]
+script = ExtResource("3_bsbwr")
 initial_state = NodePath("Exploring")
 metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
 
-[node name="Exploring" type="Node" parent="Behavior/InfantryStrategy/NormalOperation"]
+[node name="Exploring" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive"]
 script = ExtResource("4_1xst6")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
 
+[node name="attack" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive/Exploring"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../../Attacking")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="regroup" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive/Exploring"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../Grouping")
+event = &"regroup"
+delay_in_seconds = "0.0"
+
+[node name="Grouping" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive"]
+script = ExtResource("4_1xst6")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="attack" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive/Grouping"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../../Attacking")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="explore" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive/Grouping"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../Exploring")
+event = &"explore"
+delay_in_seconds = "0.0"
+
+[node name="PassiveHistory" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Passive"]
+script = ExtResource("6_5tqvn")
+default_state = NodePath("../Exploring")
+metadata/_custom_type_script = "uid://cs7l2ibshw7ya"
+
+[node name="Attacking" type="Node" parent="Behavior/InfantryStrategy/NormalOperation"]
+script = ExtResource("4_1xst6")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="enemy_lost" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Attacking"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../Waiting")
+event = &"enemy_lost"
+delay_in_seconds = "0.0"
+
+[node name="Waiting" type="Node" parent="Behavior/InfantryStrategy/NormalOperation"]
+script = ExtResource("4_1xst6")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="enemy_found" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Waiting"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../Attacking")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="stop" type="Node" parent="Behavior/InfantryStrategy/NormalOperation/Waiting"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../Passive/PassiveHistory")
+delay_in_seconds = "5.0"
+
+[node name="flee" type="Node" parent="Behavior/InfantryStrategy/NormalOperation"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../Fleeing")
+event = &"flee"
+delay_in_seconds = "0.0"
+
+[node name="Fleeing" type="Node" parent="Behavior/InfantryStrategy"]
+script = ExtResource("4_1xst6")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="escaped" type="Node" parent="Behavior/InfantryStrategy/Fleeing"]
+script = ExtResource("5_ejj7o")
+to = NodePath("../../NormalOperation")
+delay_in_seconds = "10.0"
+
 [connection signal="state_processing" from="Behavior/InfantryStrategy/NormalOperation" to="." method="_on_normal_operation_state_processing"]
-[connection signal="state_entered" from="Behavior/InfantryStrategy/NormalOperation/Exploring" to="." method="_on_exploring_state_entered"]
+[connection signal="state_entered" from="Behavior/InfantryStrategy/NormalOperation/Passive/Exploring" to="." method="_on_exploring_state_entered"]
+[connection signal="taken" from="Behavior/InfantryStrategy/NormalOperation/Passive/Exploring/regroup" to="." method="_on_regroup_taken"]
+[connection signal="state_entered" from="Behavior/InfantryStrategy/NormalOperation/Passive/Grouping" to="." method="_on_grouping_state_entered"]
+[connection signal="state_entered" from="Behavior/InfantryStrategy/NormalOperation/Attacking" to="." method="_on_attacking_state_entered"]
+[connection signal="state_entered" from="Behavior/InfantryStrategy/Fleeing" to="." method="_on_fleeing_state_entered"]

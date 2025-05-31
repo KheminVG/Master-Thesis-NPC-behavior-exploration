@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://dj0mkp2c1p2yt"]
+
+[ext_resource type="Script" uid="uid://5falmfpdw7li" path="res://Platooning/StrategicDeciders/platoon_control_strategy.gd" id="1_e3um1"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_kj4km"]
+[ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="3_f1acm"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_vxtue"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_1sam2"]
+
+[node name="PlatoonControlStrategy" type="Node2D"]
+script = ExtResource("1_e3um1")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_kj4km")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="ParallelState" type="Node" parent="Behavior"]
+script = ExtResource("3_f1acm")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="CompoundState" type="Node" parent="Behavior/ParallelState"]
+script = ExtResource("3_vxtue")
+initial_state = NodePath("Exploring")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Exploring" type="Node" parent="Behavior/ParallelState/CompoundState"]
+script = ExtResource("4_1sam2")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Regrouping" type="Node" parent="Behavior/ParallelState/CompoundState"]
+script = ExtResource("4_1sam2")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Formation" type="Node" parent="Behavior/ParallelState/CompoundState"]
+script = ExtResource("4_1sam2")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[connection signal="state_entered" from="Behavior/ParallelState/CompoundState/Exploring" to="." method="_on_exploring_state_entered"]

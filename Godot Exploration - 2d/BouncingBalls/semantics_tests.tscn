@@ -1,0 +1,91 @@
+[gd_scene load_steps=8 format=3 uid="uid://c763m4x7kqnwh"]
+
+[ext_resource type="Script" uid="uid://sqfqbmefkx8i" path="res://BouncingBalls/semantics_test.gd" id="1_tdwt6"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="2_4hxua"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="3_agnct"]
+[ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="4_6wxnv"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="5_shv4o"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="6_iw6vv"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="7_5gnxj"]
+
+[node name="semantics_tests" type="Node2D"]
+script = ExtResource("1_tdwt6")
+
+[node name="StateChartDebugger" parent="." instance=ExtResource("2_4hxua")]
+offset_left = -346.0
+offset_top = -324.0
+offset_right = 349.0
+offset_bottom = 311.0
+initial_node_to_watch = NodePath("../StateChart")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("3_agnct")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="ParallelState" type="Node" parent="StateChart"]
+script = ExtResource("4_6wxnv")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="EventvsNonEvent" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("5_shv4o")
+initial_state = NodePath("Init")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Init" type="Node" parent="StateChart/ParallelState/EventvsNonEvent"]
+script = ExtResource("6_iw6vv")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="input" type="Node" parent="StateChart/ParallelState/EventvsNonEvent/Init"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../GotEvent")
+event = &"input"
+delay_in_seconds = "0.0"
+
+[node name="second" type="Node" parent="StateChart/ParallelState/EventvsNonEvent/Init"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../Transitioned")
+delay_in_seconds = "0.0"
+
+[node name="Transitioned" type="Node" parent="StateChart/ParallelState/EventvsNonEvent"]
+script = ExtResource("6_iw6vv")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="input" type="Node" parent="StateChart/ParallelState/EventvsNonEvent/Transitioned"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../GotEvent")
+event = &"input"
+delay_in_seconds = "0.0"
+
+[node name="GotEvent" type="Node" parent="StateChart/ParallelState/EventvsNonEvent"]
+script = ExtResource("6_iw6vv")
+
+[node name="TransitionOrder" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("5_shv4o")
+initial_state = NodePath("Init")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Init" type="Node" parent="StateChart/ParallelState/TransitionOrder"]
+script = ExtResource("6_iw6vv")
+
+[node name="first" type="Node" parent="StateChart/ParallelState/TransitionOrder/Init"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../TookFirst")
+event = &"event0"
+delay_in_seconds = "0.0"
+
+[node name="second" type="Node" parent="StateChart/ParallelState/TransitionOrder/Init"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../TookSecond")
+event = &"event0"
+delay_in_seconds = "0.0"
+
+[node name="TookFirst" type="Node" parent="StateChart/ParallelState/TransitionOrder"]
+script = ExtResource("6_iw6vv")
+
+[node name="TookSecond" type="Node" parent="StateChart/ParallelState/TransitionOrder"]
+script = ExtResource("6_iw6vv")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[connection signal="state_entered" from="StateChart/ParallelState/EventvsNonEvent/Init" to="." method="_on_init_state_entered"]
+[connection signal="state_entered" from="StateChart/ParallelState/TransitionOrder/Init" to="." method="_on_transition_order_init_state_entered"]

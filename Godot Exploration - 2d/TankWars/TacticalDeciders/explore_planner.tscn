@@ -26,16 +26,16 @@ metadata/_custom_type_script = "uid://dyiggrr357tov"
 script = ExtResource("5_vjp1p")
 to = NodePath("../../Exploring")
 event = &"explore"
-delay_in_seconds = "0.0"
+delay_in_seconds = "0.5"
 
 [node name="Exploring" type="Node" parent="Behavior/ExploreStrategy"]
 script = ExtResource("4_b4k2x")
 metadata/_custom_type_script = "uid://dyiggrr357tov"
 
-[node name="attack" type="Node" parent="Behavior/ExploreStrategy/Exploring"]
+[node name="stop" type="Node" parent="Behavior/ExploreStrategy/Exploring"]
 script = ExtResource("5_vjp1p")
 to = NodePath("../../Idle")
-event = &"attack"
+event = &"stop"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://m8bym6l05tkl"
 

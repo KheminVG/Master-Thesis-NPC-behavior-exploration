@@ -7,7 +7,6 @@ signal request_path(start: Vector2, goal: Vector2)
 
 @onready var behavior: StateChart = $Behavior
 
-var pathfinding: AStar = AStar.new()
 var waypoints: Array[Vector2] = []
 var destination = null
 
@@ -27,6 +26,11 @@ func more_waypoints() -> bool:
 func _on_new_destination(pos):
 	self.set_destination(pos)
 	self.behavior.send_event("new_destination")
+
+
+func _check_target_agent(pos, agent_name):
+	if agent_name == self.name:
+		self._on_new_destination(pos)
 
 
 # Callable to connect to Tank's waypoint_reached signal.

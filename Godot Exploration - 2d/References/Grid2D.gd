@@ -46,15 +46,14 @@ func update_map(data: Dictionary, ray_origin: Vector2) -> void:
 	var collisions: Array[Vector2] = data["collisions"]
 	var normals: Array[Vector2] = data["normals"]
 	
-	var obstacles: Array[Vector2] = []
 	for i in range(collisions.size()):
-		if normals[i] != Vector2.ZERO:
-			var obstacle_tile = self.global_to_tile(collisions[i] - normals[i])
-			self.set_tile_value(obstacle_tile, 1)
-		
 		var free_tiles = self.dda_ray_tiles(ray_origin, collisions[i] + normals[i])
 		for tile in free_tiles:
 			self.set_tile_value(tile, 0)
+		
+		if normals[i] != Vector2.ZERO:
+			var obstacle_tile = self.global_to_tile(collisions[i] - normals[i])
+			self.set_tile_value(obstacle_tile, 1)
 
 func manhattan_distance(a: Vector2i, b: Vector2i):
 	return abs(a.x - b.x) + abs(a.y - b.y)
@@ -147,6 +146,11 @@ func new_exploration_target(position: Vector2):
 		return target
 	else: 
 		return null
+
+func compare(grid: Grid2D) -> void:
+	for i in range(self._data.size()):
+		if self._data[i].val == -1 and grid._data[i].val != -1:
+			self._data[i].val = grid._data[i].val
 
 func fill_enclosed_unknown_regions() -> void: 
 	var visited: Dictionary = {}

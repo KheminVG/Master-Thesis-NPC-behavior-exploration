@@ -22,8 +22,12 @@ func build_empty_map(dimensions: Dictionary):
 	self.grid = Grid2D.new(map_size, map_tile_size, map_origin, self.global_position)
 
 
+func compare_map(map: Grid2D) -> void:
+	self.grid.compare(map)
+
+
 # Callable to connect to any Radar's obstacle_sighted signals
-func _on_radar_obstacle_sighted(data, ray_origin) -> void:
+func _on_obstacle_sighted(data, ray_origin) -> void:
 	self.behavior.send_event("update_map")
 	self.grid.update_map(data, ray_origin)
 	self.update_done.emit()

@@ -1,0 +1,70 @@
+[gd_scene load_steps=7 format=3 uid="uid://4upow5w6yesc"]
+
+[ext_resource type="Script" uid="uid://drgnwv3bhm3v2" path="res://Platooning/communicator.gd" id="1_km1ck"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_xwngf"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_5js2r"]
+[ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="3_xwngf"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_j22e8"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_ic1as"]
+
+[node name="Communicator" type="Node2D"]
+script = ExtResource("1_km1ck")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_xwngf")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="Communication" type="Node" parent="Behavior"]
+script = ExtResource("3_xwngf")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="Sender" type="Node" parent="Behavior/Communication"]
+script = ExtResource("3_5js2r")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/Communication/Sender"]
+script = ExtResource("4_j22e8")
+
+[node name="send" type="Node" parent="Behavior/Communication/Sender/Idle"]
+script = ExtResource("5_ic1as")
+to = NodePath("../../Send")
+event = &"send"
+delay_in_seconds = "delay"
+
+[node name="Send" type="Node" parent="Behavior/Communication/Sender"]
+script = ExtResource("4_j22e8")
+
+[node name="finish" type="Node" parent="Behavior/Communication/Sender/Send"]
+script = ExtResource("5_ic1as")
+to = NodePath("../../Idle")
+delay_in_seconds = "0.0"
+
+[node name="Receiver" type="Node" parent="Behavior/Communication"]
+script = ExtResource("3_5js2r")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/Communication/Receiver"]
+script = ExtResource("4_j22e8")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="receive" type="Node" parent="Behavior/Communication/Receiver/Idle"]
+script = ExtResource("5_ic1as")
+to = NodePath("../../Process")
+event = &"receive"
+delay_in_seconds = "0.0"
+
+[node name="Process" type="Node" parent="Behavior/Communication/Receiver"]
+script = ExtResource("4_j22e8")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="finish" type="Node" parent="Behavior/Communication/Receiver/Process"]
+script = ExtResource("5_ic1as")
+to = NodePath("../../Idle")
+delay_in_seconds = "0.0"
+
+[connection signal="state_entered" from="Behavior/Communication/Sender/Idle" to="." method="_on_sender_idle_state_entered"]
+[connection signal="state_entered" from="Behavior/Communication/Sender/Send" to="." method="_on_send_state_entered"]
+[connection signal="state_entered" from="Behavior/Communication/Receiver/Idle" to="." method="_on_receiver_idle_state_entered"]
+[connection signal="state_entered" from="Behavior/Communication/Receiver/Process" to="." method="_on_process_state_entered"]

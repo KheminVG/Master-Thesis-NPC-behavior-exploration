@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://b6ykprim2mi83"]
+
+[ext_resource type="Script" uid="uid://3elksirlfpdb" path="res://Platooning/TacticalDeciders/explore_control.gd" id="1_msvd5"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_0dijq"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_vm5ax"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="4_hr7vi"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="5_dvidm"]
+
+[node name="ExploreControl" type="Node2D"]
+script = ExtResource("1_msvd5")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_0dijq")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="ExploreStrategy" type="Node" parent="Behavior"]
+script = ExtResource("3_vm5ax")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/ExploreStrategy"]
+script = ExtResource("4_hr7vi")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="explore" type="Node" parent="Behavior/ExploreStrategy/Idle"]
+script = ExtResource("5_dvidm")
+to = NodePath("../../Exploring")
+event = &"explore"
+delay_in_seconds = "0.0"
+
+[node name="Exploring" type="Node" parent="Behavior/ExploreStrategy"]
+script = ExtResource("4_hr7vi")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="attack" type="Node" parent="Behavior/ExploreStrategy/Exploring"]
+script = ExtResource("5_dvidm")
+to = NodePath("../../Idle")
+event = &"attack"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://m8bym6l05tkl"
+
+[node name="new_target" type="Node" parent="Behavior/ExploreStrategy/Exploring"]
+script = ExtResource("5_dvidm")
+to = NodePath("..")
+event = &"new_target"
+delay_in_seconds = "0.5"
+
+[connection signal="state_entered" from="Behavior/ExploreStrategy/Exploring" to="." method="_on_exploring_state_entered"]

@@ -6,7 +6,7 @@ signal enemy_position_changed(pos: Vector2)
 signal enemy_position_unsure
 
 var tracked_position = null
-@export var enemy_margin: float = 30.0
+@export var enemy_margin: float = 64.0
 @onready var behavior: StateChart = $Behavior
 
 # TODO implement
@@ -30,21 +30,21 @@ func get_enemy_position():
 	return self.tracked_position
 
 # Callable to connect to any Radar's enemy_sighted signals.
-func _on_radar_enemy_sighted(enemy_position) -> void:
+func _on_enemy_sighted(enemy_position) -> void:
 	self.behavior.send_event("enemy_sighted")
 	if self.enemy_moved(enemy_position):
 		self.behavior.send_event("enemy_moved")
+		self.enemy_position_changed.emit(self.get_enemy_position())
 
 
 # Callable to connect to any Radar's enemy_lost signals.
-func _on_radar_enemy_lost() -> void:
+func _on_enemy_lost() -> void:
 	self.behavior.send_event("enemy_lost")
 
 #-----------------------------------------------------------------------------#
 # EnemyPosKnown State
 func _on_enemy_pos_known_state_entered() -> void:
 	self.enemy_position_known.emit()
-	self.enemy_position_changed.emit(self.get_enemy_position())
 
 #-----------------------------------------------------------------------------#
 # EnemyPosUnsure State

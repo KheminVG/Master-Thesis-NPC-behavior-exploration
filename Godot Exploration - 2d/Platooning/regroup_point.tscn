@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcu7do534160e"]
+
+[ext_resource type="Texture2D" uid="uid://bx27n5v3rn0re" path="res://assets/kenney_top-down-shooter/PNG/target.png" id="1_5v4cr"]
+[ext_resource type="Script" uid="uid://5xh2vdn7n8nn" path="res://Platooning/regroup_point.gd" id="2_oujy0"]
+
+[node name="RegroupPoint" type="Sprite2D"]
+texture = ExtResource("1_5v4cr")
+script = ExtResource("2_oujy0")

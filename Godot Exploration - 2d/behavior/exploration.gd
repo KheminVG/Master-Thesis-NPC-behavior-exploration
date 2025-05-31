@@ -116,7 +116,7 @@ func check_vision():
 				continue
 			
 			# Ignore collision when colliding with a corner of a map tile. The normal at the point
-			# of collision is not defined and results unexpected map updates.
+			# of collision is not defined and gives unexpected map updates.
 			if not int(collision.x) % map._tile_size and not int(collision.y) % map._tile_size:
 				continue
 			

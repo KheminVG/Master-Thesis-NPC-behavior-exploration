@@ -1,0 +1,123 @@
+[gd_scene load_steps=7 format=3 uid="uid://dwt5d54cictjf"]
+
+[ext_resource type="Script" uid="uid://cprd0pf1mfpxr" path="res://Platooning/Sensors/vision.gd" id="1_s5nqj"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="2_77nhy"]
+[ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="3_7ipin"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="4_ua3sg"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="5_a3v4x"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="6_31emf"]
+
+[node name="Vision" type="Node2D"]
+script = ExtResource("1_s5nqj")
+
+[node name="VisionCone" type="Node2D" parent="."]
+
+[node name="ray1" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(274, -120)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="ray2" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(284, -90)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="ray3" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(292, -60)
+collision_mask = 3
+
+[node name="ray4" type="RayCast2D" parent="VisionCone"]
+position = Vector2(0, -1)
+target_position = Vector2(298, -30)
+collision_mask = 3
+
+[node name="ray_front" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(300, 0)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="ray5" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(298, 30)
+collision_mask = 3
+
+[node name="ray6" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(293, 60)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="ray7" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(284, 90)
+collision_mask = 3
+
+[node name="ray8" type="RayCast2D" parent="VisionCone"]
+target_position = Vector2(274, 120)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("2_77nhy")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="Announcements" type="Node" parent="Behavior"]
+script = ExtResource("3_7ipin")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="AnnounceEnemy" type="Node" parent="Behavior/Announcements"]
+script = ExtResource("4_ua3sg")
+initial_state = NodePath("NoEnemy")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="NoEnemy" type="Node" parent="Behavior/Announcements/AnnounceEnemy"]
+script = ExtResource("5_a3v4x")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="enemy_sighted" type="Node" parent="Behavior/Announcements/AnnounceEnemy/NoEnemy"]
+script = ExtResource("6_31emf")
+to = NodePath("../../EnemySighted")
+event = &"enemy_sighted"
+delay_in_seconds = "0.0"
+
+[node name="EnemySighted" type="Node" parent="Behavior/Announcements/AnnounceEnemy"]
+script = ExtResource("5_a3v4x")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="enemy_lost" type="Node" parent="Behavior/Announcements/AnnounceEnemy/EnemySighted"]
+script = ExtResource("6_31emf")
+to = NodePath("../../NoEnemy")
+event = &"enemy_lost"
+delay_in_seconds = "0.0"
+
+[node name="AnnounceObstacles" type="Node" parent="Behavior/Announcements"]
+script = ExtResource("4_ua3sg")
+initial_state = NodePath("Checking")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Checking" type="Node" parent="Behavior/Announcements/AnnounceObstacles"]
+script = ExtResource("5_a3v4x")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="processing" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Checking"]
+script = ExtResource("6_31emf")
+to = NodePath("../../Waiting")
+delay_in_seconds = "0.1"
+
+[node name="Waiting" type="Node" parent="Behavior/Announcements/AnnounceObstacles"]
+script = ExtResource("5_a3v4x")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="done" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Waiting"]
+script = ExtResource("6_31emf")
+to = NodePath("../../Checking")
+event = &"done"
+delay_in_seconds = "0.0"
+
+[node name="check_again" type="Node" parent="Behavior/Announcements/AnnounceObstacles/Waiting"]
+script = ExtResource("6_31emf")
+to = NodePath("../../Checking")
+delay_in_seconds = "0.5"
+
+[connection signal="state_processing" from="Behavior/Announcements/AnnounceEnemy/NoEnemy" to="." method="_on_no_enemy_state_processing"]
+[connection signal="taken" from="Behavior/Announcements/AnnounceEnemy/NoEnemy/enemy_sighted" to="." method="_on_enemy_sighted_taken"]
+[connection signal="state_processing" from="Behavior/Announcements/AnnounceEnemy/EnemySighted" to="." method="_on_enemy_sighted_state_processing"]
+[connection signal="taken" from="Behavior/Announcements/AnnounceEnemy/EnemySighted/enemy_lost" to="." method="_on_enemy_lost_taken"]
+[connection signal="taken" from="Behavior/Announcements/AnnounceObstacles/Checking/processing" to="." method="_on_processing_taken"]

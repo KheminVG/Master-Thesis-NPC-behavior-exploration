@@ -39,29 +39,28 @@ func _ready() -> void:
 	
 	self.attack_planner.aim_at.connect(self.turret._on_attack_planner_aim_at)
 	
-	self.tank_body.radar.enemy_sighted.connect(self.enemy_tracker._on_radar_enemy_sighted)
-	self.tank_body.radar.enemy_lost.connect(self.enemy_tracker._on_radar_enemy_lost)
-	self.turret.radar.enemy_sighted.connect(self.enemy_tracker._on_radar_enemy_sighted)
-	self.turret.radar.enemy_lost.connect(self.enemy_tracker._on_radar_enemy_lost)
+	self.tank_body.radar.enemy_sighted.connect(self.enemy_tracker._on_enemy_sighted)
+	self.tank_body.radar.enemy_lost.connect(self.enemy_tracker._on_enemy_lost)
+	self.turret.radar.enemy_sighted.connect(self.enemy_tracker._on_enemy_sighted)
+	self.turret.radar.enemy_lost.connect(self.enemy_tracker._on_enemy_lost)
 	
-	self.tank_body.radar.obstacles_sighted.connect(self.obstacle_map._on_radar_obstacle_sighted)
-	self.turret.radar.obstacles_sighted.connect(self.obstacle_map._on_radar_obstacle_sighted)
+	self.tank_body.radar.obstacles_sighted.connect(self.obstacle_map._on_obstacle_sighted)
+	self.turret.radar.obstacles_sighted.connect(self.obstacle_map._on_obstacle_sighted)
 	self.pathfinder.request_path.connect(self.obstacle_map._on_pathfinder_request_path)
 	self.explore_planner.request_exploration_target.connect(self.obstacle_map._on_explore_planner_request_exploration_target)
 	
 	self.turret.ready_to_shoot.connect(self.attack_planner._on_turret_ready_to_shoot)
 	self.pilot_strategy.attack.connect(self.attack_planner._on_strategy_attack)
-	self.pilot_strategy.explore.connect(self.attack_planner._on_strategy_explore)
+	self.pilot_strategy.explore.connect(self.attack_planner._stop_attack_planner)
 	self.enemy_tracker.enemy_position_changed.connect(self.attack_planner._on_enemy_tracker_enemy_position_changed)
 	
 	self.pathfinder.destination_reached.connect(self.explore_planner._on_pathfinder_destination_reached)
 	self.obstacle_map.send_exploration_target.connect(self.explore_planner._on_obstacle_map_send_exploration_target)
-	self.pilot_strategy.attack.connect(self.explore_planner._on_strategy_attack)
+	self.pilot_strategy.attack.connect(self.explore_planner._stop_explore_planner)
 	self.pilot_strategy.explore.connect(self.explore_planner._on_strategy_explore)
 	
 	self.attack_planner.new_destination.connect(self.pathfinder._on_new_destination)
 	self.explore_planner.new_destination.connect(self.pathfinder._on_new_destination)
-	#self.tank_body.radar.obstacles_sighted.connect(self.pathfinder._on_tank_body_radar_obstacle_sighted)
 	self.waypoint_reached.connect(self.pathfinder._on_waypoint_reached)
 	self.obstacle_map.send_path.connect(self.pathfinder._on_obstacle_map_send_path)
 	self.clear_pathfinding.connect(self.pathfinder._on_clear_pathfinding)

@@ -1,0 +1,73 @@
+[gd_scene load_steps=6 format=3 uid="uid://0bkshlrx7wpw"]
+
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="1_lgmk0"]
+[ext_resource type="Script" uid="uid://cr3jibr6q21gb" path="res://Platooning/TacticalDeciders/group_planner.gd" id="1_qhhnw"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="2_qhhnw"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="3_pa0ei"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="4_n3jpv"]
+
+[node name="GroupPlanner" type="Node2D"]
+script = ExtResource("1_qhhnw")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("1_lgmk0")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="CompoundState" type="Node" parent="Behavior"]
+script = ExtResource("2_qhhnw")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/CompoundState"]
+script = ExtResource("3_pa0ei")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="regroup" type="Node" parent="Behavior/CompoundState/Idle"]
+script = ExtResource("4_n3jpv")
+to = NodePath("../../GroupBehavior")
+event = &"regroup"
+delay_in_seconds = "0.0"
+
+[node name="GroupBehavior" type="Node" parent="Behavior/CompoundState"]
+script = ExtResource("2_qhhnw")
+initial_state = NodePath("Regroup")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Regroup" type="Node" parent="Behavior/CompoundState/GroupBehavior"]
+script = ExtResource("3_pa0ei")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="regrouped" type="Node" parent="Behavior/CompoundState/GroupBehavior/Regroup"]
+script = ExtResource("4_n3jpv")
+to = NodePath("../../Formation")
+event = &"regrouped"
+delay_in_seconds = "0.0"
+
+[node name="Formation" type="Node" parent="Behavior/CompoundState/GroupBehavior"]
+script = ExtResource("2_qhhnw")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/CompoundState/GroupBehavior/Formation"]
+script = ExtResource("3_pa0ei")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="found_reference" type="Node" parent="Behavior/CompoundState/GroupBehavior/Formation/Idle"]
+script = ExtResource("4_n3jpv")
+to = NodePath("../../Ready")
+event = &"request"
+delay_in_seconds = "0.0"
+
+[node name="Ready" type="Node" parent="Behavior/CompoundState/GroupBehavior/Formation"]
+script = ExtResource("3_pa0ei")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="stop" type="Node" parent="Behavior/CompoundState/GroupBehavior"]
+script = ExtResource("4_n3jpv")
+to = NodePath("../../Idle")
+event = &"stop"
+delay_in_seconds = "0.0"
+
+[connection signal="state_entered" from="Behavior/CompoundState/GroupBehavior/Regroup" to="." method="_on_regroup_state_entered"]
+[connection signal="state_processing" from="Behavior/CompoundState/GroupBehavior/Regroup" to="." method="_on_regroup_state_processing"]
+[connection signal="state_entered" from="Behavior/CompoundState/GroupBehavior/Formation/Idle" to="." method="_on_formation_idle_state_entered"]
