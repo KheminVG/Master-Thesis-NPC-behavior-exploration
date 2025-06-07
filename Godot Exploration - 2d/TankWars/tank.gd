@@ -3,7 +3,7 @@ class_name Tank
 
 # TODO further enhance the Tank behavior. Include FUEL, REPAIR, DAMAGE
 
-signal travel_target(target: Vector2)
+signal travel_target(waypoint: Vector2)
 signal waypoint_reached
 signal clear_pathfinding
 

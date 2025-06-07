@@ -31,5 +31,3 @@ func _input(event):
 	elif Input.is_action_pressed("zoom_out"):
 		new_zoom -= zoomStep
 	new_zoom = float(clamp(new_zoom, zoomMin, zoomMax))
-
-

@@ -20,6 +20,9 @@ initial_node_to_watch = NodePath("../StateChart")
 
 [node name="StateChart" type="Node" parent="."]
 script = ExtResource("3_agnct")
+initial_expression_properties = {
+&"x": 5
+}
 metadata/_custom_type_script = "uid://cau6j0o0julfq"
 
 [node name="ParallelState" type="Node" parent="StateChart"]
@@ -85,7 +88,53 @@ script = ExtResource("6_iw6vv")
 [node name="TookSecond" type="Node" parent="StateChart/ParallelState/TransitionOrder"]
 script = ExtResource("6_iw6vv")
 
+[node name="RegionPriority" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("4_6wxnv")
+metadata/_custom_type_script = "uid://dtlmgewt76wtf"
+
+[node name="Doubling" type="Node" parent="StateChart/ParallelState/RegionPriority"]
+script = ExtResource("5_shv4o")
+initial_state = NodePath("Init")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Init" type="Node" parent="StateChart/ParallelState/RegionPriority/Doubling"]
+script = ExtResource("6_iw6vv")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="double" type="Node" parent="StateChart/ParallelState/RegionPriority/Doubling/Init"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../Done")
+event = &"input"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://m8bym6l05tkl"
+
+[node name="Done" type="Node" parent="StateChart/ParallelState/RegionPriority/Doubling"]
+script = ExtResource("6_iw6vv")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="Decrease" type="Node" parent="StateChart/ParallelState/RegionPriority"]
+script = ExtResource("5_shv4o")
+initial_state = NodePath("Init")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Init" type="Node" parent="StateChart/ParallelState/RegionPriority/Decrease"]
+script = ExtResource("6_iw6vv")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="decrease" type="Node" parent="StateChart/ParallelState/RegionPriority/Decrease/Init"]
+script = ExtResource("7_5gnxj")
+to = NodePath("../../Done")
+event = &"input"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://m8bym6l05tkl"
+
+[node name="Done" type="Node" parent="StateChart/ParallelState/RegionPriority/Decrease"]
+script = ExtResource("6_iw6vv")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [connection signal="state_entered" from="StateChart/ParallelState/EventvsNonEvent/Init" to="." method="_on_init_state_entered"]
 [connection signal="state_entered" from="StateChart/ParallelState/TransitionOrder/Init" to="." method="_on_transition_order_init_state_entered"]
+[connection signal="taken" from="StateChart/ParallelState/RegionPriority/Doubling/Init/double" to="." method="_on_double_taken"]
+[connection signal="taken" from="StateChart/ParallelState/RegionPriority/Decrease/Init/decrease" to="." method="_on_decrease_taken"]
