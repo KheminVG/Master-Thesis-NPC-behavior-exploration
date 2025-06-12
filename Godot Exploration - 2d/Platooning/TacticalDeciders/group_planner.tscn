@@ -55,7 +55,7 @@ metadata/_custom_type_script = "uid://dyiggrr357tov"
 [node name="found_reference" type="Node" parent="Behavior/CompoundState/GroupBehavior/Formation/Idle"]
 script = ExtResource("4_n3jpv")
 to = NodePath("../../Ready")
-event = &"request"
+event = &"ready"
 delay_in_seconds = "0.0"
 
 [node name="Ready" type="Node" parent="Behavior/CompoundState/GroupBehavior/Formation"]
