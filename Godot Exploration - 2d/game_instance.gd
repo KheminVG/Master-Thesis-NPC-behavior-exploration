@@ -1,3 +1,7 @@
+# This code is based on work by Joshua Moelans
+# https://github.com/JoshuaMoelans/Master-Thesis-Godot-exploration (accessed March 2025)
+# Originally developed for his master's thesis at the University of Antwerp
+
 extends Node2D
 class_name GameInstance
 

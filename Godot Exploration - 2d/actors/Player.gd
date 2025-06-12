@@ -1,3 +1,7 @@
+# This code is borrowed from work by Joshua Moelans
+# https://github.com/JoshuaMoelans/Master-Thesis-Godot-exploration (accessed March 2025)
+# Originally developed for his master's thesis at the University of Antwerp
+
 extends CharacterBody2D
 class_name Player
 
@@ -5,7 +9,6 @@ class_name Player
 @export var SPEED:float = 300.0
 @onready var collision_shape = $CollisionShape2D
 @onready var sprite = $Sprite2D
-@onready var weapon_manager = $WeaponManager
 @onready var health = $Health
 @onready var team = $Team
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -17,7 +20,6 @@ signal player_health_changed(new_health)
 func _ready() -> void:
 	collision_shape.disabled = true
 	sprite.visible = false
-	weapon_manager.visible = false
 	pass
 
 func _physics_process(delta):

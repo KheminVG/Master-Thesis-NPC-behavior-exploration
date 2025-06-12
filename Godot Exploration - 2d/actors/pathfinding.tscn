@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://10c33rrt8ihf"]
-
-[ext_resource type="Script" uid="uid://dv03ot2kgpf6n" path="res://Pathfinding.gd" id="1_8figi"]
-
-[node name="Pathfinding" type="Node2D"]
-script = ExtResource("1_8figi")
-
-[node name="Grid" type="Node2D" parent="."]

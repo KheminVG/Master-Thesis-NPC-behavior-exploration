@@ -1,12 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cinvnsnbdela7"]
+[gd_scene load_steps=6 format=3 uid="uid://cinvnsnbdela7"]
 
 [ext_resource type="Script" uid="uid://cy73q6crwc0h6" path="res://actors/Player.gd" id="1_6l42o"]
 [ext_resource type="Texture2D" uid="uid://cdeimht6hkm2p" path="res://assets/kenney_top-down-shooter/Spritesheet/spritesheet_characters.png" id="3_nvab8"]
-[ext_resource type="PackedScene" uid="uid://o6molutvo6rq" path="res://actors/health.tscn" id="4_kq41h"]
+[ext_resource type="PackedScene" path="res://actors/health.tscn" id="4_kq41h"]
 [ext_resource type="PackedScene" uid="uid://l15usiweohi7" path="res://team.tscn" id="5_cntjr"]
-[ext_resource type="Script" uid="uid://bhhu0ibjxxu4v" path="res://actors/WeaponManager.gd" id="5_dgjau"]
-[ext_resource type="PackedScene" uid="uid://dpxt2l5me7kd" path="res://weapons/pistol.tscn" id="5_kebm2"]
-[ext_resource type="PackedScene" uid="uid://bsrnkwefakbsk" path="res://weapons/submachine_gun.tscn" id="7_xt32f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ftm6t"]
 size = Vector2(27, 41)
@@ -29,13 +26,3 @@ debug_color = Color(1, 1, 1, 0)
 [node name="Health" parent="." instance=ExtResource("4_kq41h")]
 
 [node name="Team" parent="." instance=ExtResource("5_cntjr")]
-
-[node name="WeaponManager" type="Node2D" parent="."]
-position = Vector2(27, 13)
-script = ExtResource("5_dgjau")
-disabled = true
-
-[node name="Pistol" parent="WeaponManager" instance=ExtResource("5_kebm2")]
-
-[node name="SubmachineGun" parent="WeaponManager" instance=ExtResource("7_xt32f")]
-position = Vector2(-1, 0)

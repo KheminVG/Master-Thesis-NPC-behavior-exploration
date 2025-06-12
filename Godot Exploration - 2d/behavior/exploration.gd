@@ -1,3 +1,7 @@
+# This code is based on work by Joshua Moelans
+# https://github.com/JoshuaMoelans/Master-Thesis-Godot-exploration (accessed March 2025)
+# Originally developed for his master's thesis at the University of Antwerp
+
 extends BehaviorAgent
 class_name ExplorationAgent
 
@@ -138,12 +142,12 @@ func check_vision():
 func new_exploration_target(current: Vector2i):
 	var frontier: MaxHeap = map.get_frontier_utilities(current)
 	if not frontier.empty():
-		var target: Vector2i = frontier.pop().position
+		var target: Vector2i = frontier.pop().pos
 	
 		# If the first returned target is the same as the current tile, we take the next best tile 
 		# in the frontier.
 		if target == current and not frontier.empty():
-			return frontier.pop().position
+			return frontier.pop().pos
 		elif target == current and frontier.empty():
 			return null
 		return target
