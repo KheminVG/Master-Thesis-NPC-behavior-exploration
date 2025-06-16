@@ -1,0 +1,70 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.2 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36" version="27.0.2">
+  <diagram name="Page-1" id="22B9hYl9YayqIewP2WHs">
+    <mxGraphModel dx="815" dy="485" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="iI2OFhir9Bx044SicczO-1" value="EnemyTracker" style="shape=folder;align=center;verticalAlign=middle;fontStyle=0;tabWidth=100;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="60" y="269" width="420" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-2" value="EnemyPresent" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="280" y="320" width="180" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-3" value="NoEnemy" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="100" y="360" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-4" value="EnemyPosUnsure" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="310" y="480" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-5" value="EnemyPosKnown" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="310" y="360" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-6" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" parent="1" source="iI2OFhir9Bx044SicczO-4" target="iI2OFhir9Bx044SicczO-5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="340" y="500" as="sourcePoint" />
+            <mxPoint x="390" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-9" value="enemy_sighted" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="iI2OFhir9Bx044SicczO-6" vertex="1" connectable="0">
+          <mxGeometry x="0.0667" relative="1" as="geometry">
+            <mxPoint x="1" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="iI2OFhir9Bx044SicczO-5" target="iI2OFhir9Bx044SicczO-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="340" y="500" as="sourcePoint" />
+            <mxPoint x="390" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-8" value="enemy_lost" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="iI2OFhir9Bx044SicczO-7" vertex="1" connectable="0">
+          <mxGeometry x="-0.0933" relative="1" as="geometry">
+            <mxPoint x="-2" y="19" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-11" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" parent="1" vertex="1">
+          <mxGeometry x="70" y="332" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.506;exitY=0.86;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="iI2OFhir9Bx044SicczO-3" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="80.12" y="347.19999999999993" as="sourcePoint" />
+            <mxPoint x="330" y="450" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="80" y="375" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iI2OFhir9Bx044SicczO-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="iI2OFhir9Bx044SicczO-3" target="iI2OFhir9Bx044SicczO-5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="490" as="sourcePoint" />
+            <mxPoint x="450" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fSeGmliWuAOLNSatYNyg-1" value="enemy_sighted" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="iI2OFhir9Bx044SicczO-14" vertex="1" connectable="0">
+          <mxGeometry x="-0.4274" y="-1" relative="1" as="geometry">
+            <mxPoint x="20" y="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
