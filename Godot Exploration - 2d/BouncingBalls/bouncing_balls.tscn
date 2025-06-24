@@ -12,3 +12,28 @@ anchor_mode = 0
 [node name="Walls" parent="." instance=ExtResource("2_id6qv")]
 
 [node name="Balls" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Controls" type="PanelContainer" parent="CanvasLayer"]
+offset_right = 275.0
+offset_bottom = 104.0
+
+[node name="List" type="VBoxContainer" parent="CanvasLayer/Controls"]
+layout_mode = 2
+
+[node name="create" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "create ball: RMB"
+
+[node name="destroy" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "destroy ball: MMB"
+
+[node name="select" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "select ball: LMB"
+
+[node name="grab" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "grab ball: Hold LMB (while selected)"

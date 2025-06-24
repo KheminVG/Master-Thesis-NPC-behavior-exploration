@@ -1,7 +1,7 @@
 [gd_scene load_steps=48 format=3 uid="uid://dpw4gqwmpfe5e"]
 
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="1_0ag1n"]
-[ext_resource type="Script" uid="uid://cl75pkl5l8lau" path="res://BouncingBalls/sc_semantics.gd" id="1_7xljh"]
+[ext_resource type="Script" uid="uid://cl75pkl5l8lau" path="res://semantic_testing/sc_semantics.gd" id="1_7xljh"]
 [ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="2_7xljh"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="2_umojb"]
 [ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="3_umojb"]
@@ -193,9 +193,9 @@ script = ExtResource("1_7xljh")
 
 [node name="StateChartDebugger" parent="." instance=ExtResource("2_umojb")]
 offset_left = -685.0
-offset_top = -476.0
+offset_top = -502.0
 offset_right = 690.0
-offset_bottom = 464.0
+offset_bottom = 503.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 initial_node_to_watch = NodePath("../StateChart")

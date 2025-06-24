@@ -1,0 +1,143 @@
+[gd_scene load_steps=10 format=3 uid="uid://bb5grkgqlyppc"]
+
+[ext_resource type="Script" uid="uid://8dk6gdfdimxu" path="res://Platooning/leader.gd" id="1_lerld"]
+[ext_resource type="Texture2D" uid="uid://ci5drx8biwvkd" path="res://assets/kenney_top-down-shooter/PNG/leader.png" id="2_56dxl"]
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="3_56dxl"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="4_6e8ak"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="5_4oxbc"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="6_ko0ks"]
+[ext_resource type="PackedScene" uid="uid://c18kqntm5kf53" path="res://Platooning/Communication/Communicator.tscn" id="7_56dxl"]
+[ext_resource type="PackedScene" uid="uid://cxa4n46xuic4k" path="res://TankWars/Memorizers/obstacle_map.tscn" id="7_tkcwn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fc5gf"]
+radius = 23.0
+
+[node name="Leader" type="CharacterBody2D"]
+script = ExtResource("1_lerld")
+
+[node name="sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_56dxl")
+
+[node name="collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_fc5gf")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("3_56dxl")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="CompoundState" type="Node" parent="Behavior"]
+script = ExtResource("4_6e8ak")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="Idle" type="Node" parent="Behavior/CompoundState"]
+script = ExtResource("5_4oxbc")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="attack" type="Node" parent="Behavior/CompoundState/Idle"]
+script = ExtResource("6_ko0ks")
+to = NodePath("../../Commands/Attack")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="explore" type="Node" parent="Behavior/CompoundState/Idle"]
+script = ExtResource("6_ko0ks")
+to = NodePath("../../Commands/Explore")
+event = &"explore"
+delay_in_seconds = "0.0"
+
+[node name="group" type="Node" parent="Behavior/CompoundState/Idle"]
+script = ExtResource("6_ko0ks")
+to = NodePath("../../Commands/Group")
+event = &"group"
+delay_in_seconds = "0.0"
+
+[node name="Commands" type="Node" parent="Behavior/CompoundState"]
+script = ExtResource("4_6e8ak")
+initial_state = NodePath("Group")
+
+[node name="Attack" type="Node" parent="Behavior/CompoundState/Commands"]
+script = ExtResource("5_4oxbc")
+
+[node name="finish" type="Node" parent="Behavior/CompoundState/Commands/Attack"]
+script = ExtResource("6_ko0ks")
+to = NodePath("../../../Idle")
+event = &"end"
+delay_in_seconds = "0.2"
+
+[node name="Explore" type="Node" parent="Behavior/CompoundState/Commands"]
+script = ExtResource("5_4oxbc")
+
+[node name="finish" type="Node" parent="Behavior/CompoundState/Commands/Explore"]
+script = ExtResource("6_ko0ks")
+to = NodePath("../../../Idle")
+delay_in_seconds = "0.5"
+
+[node name="Group" type="Node" parent="Behavior/CompoundState/Commands"]
+script = ExtResource("5_4oxbc")
+
+[node name="finish" type="Node" parent="Behavior/CompoundState/Commands/Group"]
+script = ExtResource("6_ko0ks")
+to = NodePath("../../../Idle")
+delay_in_seconds = "0.2"
+
+[node name="Communicator" parent="." instance=ExtResource("7_56dxl")]
+
+[node name="ObstacleMap" parent="." instance=ExtResource("7_tkcwn")]
+show_map = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Controls" type="PanelContainer" parent="CanvasLayer"]
+offset_right = 66.0
+offset_bottom = 88.0
+
+[node name="List" type="VBoxContainer" parent="CanvasLayer/Controls"]
+layout_mode = 2
+
+[node name="movement" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "move: WASD"
+
+[node name="sprint" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "sprint: Shift"
+
+[node name="attack" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "attack: Q"
+
+[node name="select_target" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "select target: LMB"
+
+[node name="explore" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "explore: E "
+
+[node name="group" type="Label" parent="CanvasLayer/Controls/List"]
+layout_mode = 2
+text = "group: G"
+
+[node name="Indicator" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="IndicatorLabel" type="Label" parent="CanvasLayer/Indicator"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Idle"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="state_entered" from="Behavior/CompoundState" to="." method="_on_compound_state_state_entered"]
+[connection signal="state_entered" from="Behavior/CompoundState/Idle" to="." method="_on_idle_state_entered"]
+[connection signal="state_entered" from="Behavior/CompoundState/Commands/Attack" to="." method="_on_attack_state_entered"]
+[connection signal="state_processing" from="Behavior/CompoundState/Commands/Attack" to="." method="_on_attack_state_processing"]
+[connection signal="state_entered" from="Behavior/CompoundState/Commands/Explore" to="." method="_on_explore_state_entered"]
+[connection signal="state_entered" from="Behavior/CompoundState/Commands/Group" to="." method="_on_group_state_entered"]

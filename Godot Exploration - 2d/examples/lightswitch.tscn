@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://dqqox43nstlup"]
+
+[ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="1_veg0d"]
+[ext_resource type="Script" uid="uid://bou0yn8lpwcuh" path="res://addons/godot_state_charts/compound_state.gd" id="2_ici4j"]
+[ext_resource type="Script" uid="uid://dyiggrr357tov" path="res://addons/godot_state_charts/atomic_state.gd" id="3_uglt7"]
+[ext_resource type="Script" uid="uid://m8bym6l05tkl" path="res://addons/godot_state_charts/transition.gd" id="4_r4ss6"]
+
+[node name="Lightswitch" type="Node2D"]
+
+[node name="Statechart" type="Node" parent="."]
+script = ExtResource("1_veg0d")
+metadata/_custom_type_script = "uid://cau6j0o0julfq"
+
+[node name="Lightswitch" type="Node" parent="Statechart"]
+script = ExtResource("2_ici4j")
+initial_state = NodePath("off")
+metadata/_custom_type_script = "uid://bou0yn8lpwcuh"
+
+[node name="off" type="Node" parent="Statechart/Lightswitch"]
+script = ExtResource("3_uglt7")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="flip" type="Node" parent="Statechart/Lightswitch/off"]
+script = ExtResource("4_r4ss6")
+to = NodePath("../../on")
+event = &"flip"
+delay_in_seconds = "0.0"
+
+[node name="on" type="Node" parent="Statechart/Lightswitch"]
+script = ExtResource("3_uglt7")
+metadata/_custom_type_script = "uid://dyiggrr357tov"
+
+[node name="flip" type="Node" parent="Statechart/Lightswitch/on"]
+script = ExtResource("4_r4ss6")
+to = NodePath("../../off")
+event = &"flip"
+delay_in_seconds = "0.0"

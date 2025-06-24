@@ -1,14 +1,14 @@
 [gd_scene load_steps=6 format=4 uid="uid://htfwsxicdhip"]
 
-[ext_resource type="Script" uid="uid://bmuinyb4rfcut" path="res://Platooning/platoon_test_world.gd" id="1_ahheq"]
+[ext_resource type="Script" uid="uid://bmuinyb4rfcut" path="res://Platooning/Scenarios/platoon_team_world.gd" id="1_ahheq"]
 [ext_resource type="TileSet" uid="uid://d02nybfepnuiw" path="res://assets/tilesets/main_tileset.tres" id="2_qyuao"]
 [ext_resource type="PackedScene" uid="uid://blmnl0b0h0tu0" path="res://Platooning/infantry.tscn" id="3_a4rne"]
-[ext_resource type="PackedScene" uid="uid://dcu7do534160e" path="res://Platooning/regroup_point.tscn" id="4_kwdou"]
+[ext_resource type="PackedScene" uid="uid://dcu7do534160e" path="res://Platooning/misc/regroup_point.tscn" id="4_kwdou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_msrlr"]
 size = Vector2(2560, 1440)
 
-[node name="PlatoonTestWorld" type="Node2D"]
+[node name="PlatoonTeamWorld" type="Node2D"]
 script = ExtResource("1_ahheq")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -49,6 +49,7 @@ rotation = -3.1238
 TEAM = "ENEMY"
 
 [node name="EnemyPoint" parent="." instance=ExtResource("4_kwdou")]
+modulate = Color(1, 0, 0.623529, 1)
 position = Vector2(1310, 1181)
 rotation = -0.000539899
 _team = "ENEMY"

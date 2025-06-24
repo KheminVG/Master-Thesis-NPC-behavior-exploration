@@ -6,6 +6,8 @@ signal send_exploration_target(target: Vector2)
 signal update_done
 
 @onready var behavior: StateChart = $Behavior
+@export var show_map: bool = false
+
 var grid: Grid2D
 var pathfinding: AStar = AStar.new()
 
@@ -51,4 +53,5 @@ func _on_explore_planner_request_exploration_target(pos: Vector2):
 
 # Timer to show map
 func _on_timer_timeout() -> void:
-	print(self.grid.stringify_grid2d())
+	if self.show_map:
+		print(self.grid.stringify_grid2d())

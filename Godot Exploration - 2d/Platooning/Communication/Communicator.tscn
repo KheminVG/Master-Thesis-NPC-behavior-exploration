@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://c18kqntm5kf53"]
+
+[ext_resource type="Script" uid="uid://bjl081wbrtwo0" path="res://Platooning/Communication/communicator.gd" id="1_g081f"]
+[ext_resource type="PackedScene" uid="uid://4upow5w6yesc" path="res://Platooning/Communication/communication_channel.tscn" id="2_wqcap"]
+
+[node name="Communicator" type="Node2D"]
+script = ExtResource("1_g081f")
+
+[node name="CommandChannel" parent="." instance=ExtResource("2_wqcap")]
+channel_name = "command"
+
+[node name="DataChannel" parent="." instance=ExtResource("2_wqcap")]
+channel_name = "data"

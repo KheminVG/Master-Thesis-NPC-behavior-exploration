@@ -59,16 +59,6 @@ func _on_selected_state_entered() -> void:
 	queue_redraw()
 
 
-func _on_selected_state_physics_processing(delta: float) -> void:
-	pass
-
-
-# ----------------------------------------------------------------------------#
-# MouseOutside State
-func _on_mouse_outside_state_processing(delta: float) -> void:
-	pass # Replace with function body.
-
-
 # ----------------------------------------------------------------------------#
 # MouseInside State
 func _on_mouse_inside_state_processing(delta: float) -> void:

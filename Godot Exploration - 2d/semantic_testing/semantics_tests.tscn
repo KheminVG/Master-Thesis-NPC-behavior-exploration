@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c763m4x7kqnwh"]
 
-[ext_resource type="Script" uid="uid://sqfqbmefkx8i" path="res://BouncingBalls/semantics_test.gd" id="1_tdwt6"]
+[ext_resource type="Script" uid="uid://sqfqbmefkx8i" path="res://semantic_testing/semantics_test.gd" id="1_tdwt6"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="2_4hxua"]
 [ext_resource type="Script" uid="uid://cau6j0o0julfq" path="res://addons/godot_state_charts/state_chart.gd" id="3_agnct"]
 [ext_resource type="Script" uid="uid://dtlmgewt76wtf" path="res://addons/godot_state_charts/parallel_state.gd" id="4_6wxnv"]

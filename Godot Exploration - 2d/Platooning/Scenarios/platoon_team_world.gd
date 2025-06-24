@@ -1,8 +1,5 @@
-extends Node2D
-class_name PlatoonTestInstance
-
-@export var TILE_SIZE: int = 64
-@onready var area: CollisionShape2D = $Bounds/area
+extends PlatoonTestInstance
+class_name PlatoonTeamInstance
 
 
 func _ready() -> void:
@@ -17,13 +14,3 @@ func _ready() -> void:
 					child.group_planner.reached_regroup.connect(other._request_group)
 					other.group.connect(child.infantry_strategy._on_team_group)
 					other.explore.connect(child.infantry_strategy._on_team_explore)
-
-
-func get_map_dimensions() -> Dictionary:
-	var dimensions: Dictionary = {}
-	
-	dimensions["size"] = area.get_shape().get_rect().size
-	dimensions["tile_size"] = TILE_SIZE
-	dimensions["instance_offset"] = position
-	
-	return dimensions
