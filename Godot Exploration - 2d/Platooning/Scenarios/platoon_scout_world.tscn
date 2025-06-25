@@ -24,10 +24,14 @@ shape = SubResource("RectangleShape2D_msrlr")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
-zoom = Vector2(0.75, 0.75)
+zoom = Vector2(0.625, 0.625)
 
 [node name="Scout" parent="." instance=ExtResource("3_8ed0l")]
 position = Vector2(351, 673)
+
+[node name="Scout2" parent="." instance=ExtResource("3_8ed0l")]
+position = Vector2(416, 863)
+rotation = -1.51706
 
 [node name="AllyPoint" parent="." instance=ExtResource("4_h1dk1")]
 position = Vector2(434, 675)
@@ -36,6 +40,12 @@ position = Vector2(434, 675)
 modulate = Color(1, 0, 0.623529, 1)
 position = Vector2(1525, 1291)
 rotation = -0.905952
+TEAM = "ENEMIES"
+
+[node name="EnemyScout2" parent="." instance=ExtResource("3_8ed0l")]
+modulate = Color(1, 0, 0.623529, 1)
+position = Vector2(1506, 1105)
+rotation = 0.659578
 TEAM = "ENEMIES"
 
 [node name="EnemyPoint" parent="." instance=ExtResource("4_h1dk1")]

@@ -26,7 +26,7 @@ shape = SubResource("RectangleShape2D_msrlr")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
-zoom = Vector2(0.75, 0.75)
+zoom = Vector2(0.625, 0.625)
 
 [node name="Leader" parent="." instance=ExtResource("4_m7xno")]
 position = Vector2(266, 321)

@@ -20,9 +20,9 @@ shape = SubResource("WorldBoundaryShape2D_ybrl2")
 shape = SubResource("WorldBoundaryShape2D_38jwr")
 
 [node name="right" type="CollisionShape2D" parent="."]
-position = Vector2(1920, 0)
+position = Vector2(1600, 0)
 shape = SubResource("WorldBoundaryShape2D_t8f6e")
 
 [node name="bottom" type="CollisionShape2D" parent="."]
-position = Vector2(0, 1080)
+position = Vector2(0, 900)
 shape = SubResource("WorldBoundaryShape2D_5620d")
